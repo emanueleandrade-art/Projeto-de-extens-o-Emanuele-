@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projeto de Extensão III | Escola Estadual Heloiza Therezinha Murbach Lacava</title>
+<style>
+/* ===== 1. Base e paleta pastel (inspirada no HTML de referência) ===== */
+:root{--pink:#d96e9f;--pink2:#fff0f6;--lilac:#eee9ff;--mint:#e3f6ed;--blue:#e8f3ff;--yellow:#fff6d9;--ink:#3d3544;--muted:#756c7c;--line:#eee6ef;--shadow:0 12px 35px #48354d12}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:linear-gradient(180deg,#fffafd,#f7f4ff 50%,#f3fbf7);color:var(--ink);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}
+button{font:inherit;cursor:pointer;border:0}
+:focus-visible{outline:3px solid #e9a0bf;outline-offset:2px}
+
+/* ===== 2. Cabeçalho fixo e menu ===== */
+.top{background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--line);padding:10px max(16px,calc((100% - 1120px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px;line-height:1.25}
+.logo{width:40px;height:40px;flex:none;border-radius:14px;background:linear-gradient(135deg,#ffd7e8,#e4ddff);display:grid;place-items:center;font-size:21px}
+.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500}
+nav ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+nav a{display:block;padding:10px 12px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:650;color:#706777}
+nav a:hover,nav a.on{background:var(--pink2);color:#b24e7e}
+#menuBtn{display:none;background:#f2edf8;color:#665a70;border-radius:10px;padding:8px 12px;font-weight:700}
+.btn{background:var(--pink);color:#fff;border-radius:12px;padding:10px 15px;font-weight:750;box-shadow:0 5px 12px #d96e9f26;transition:.2s}
+.btn:hover{transform:translateY(-2px)}
+
+/* ===== 3. Estrutura e cartões ===== */
+.wrap{max-width:1120px;margin:auto;padding:24px 16px 60px}
+section{margin-bottom:46px}
+h2.st{font-size:clamp(22px,3vw,28px);margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 18px;max-width:760px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);transition:.2s}
+.card:hover{transform:translateY(-3px)}
+.card h3{margin:8px 0 6px;font-size:17px}
+.card p{margin:4px 0;color:var(--muted)}
+.card ul{margin:6px 0 0;padding-left:18px;color:#5d5465}
+.ico{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-size:23px;background:var(--pink2)}
+.tag{display:inline-block;background:#f4effb;color:#77628e;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:800;margin:2px 4px 2px 0}
+.tag.g{background:#e6f7ee;color:#39795c}.tag.o{background:#fff1dc;color:#916a2e}.tag.r{background:#ffe6ee;color:#b0476f}.tag.b{background:#e3f0ff;color:#3f6a96}
+.bg-pink{background:var(--pink2)}.bg-lilac{background:var(--lilac)}.bg-mint{background:var(--mint)}.bg-blue{background:var(--blue)}.bg-yellow{background:var(--yellow)}
+.notice{border-radius:14px;background:#fff8e9;border:1px solid #f6e5bd;color:#775f34;padding:12px 15px;font-size:14px;margin:14px 0}
+.notice.info{background:#eff7ff;border-color:#d8eaff;color:#45627c}
+
+/* ===== 4. Hero ===== */
+.hero{padding:34px;border-radius:26px;background:linear-gradient(120deg,#fff0f6,#f4f0ff 65%,#effaf4);margin-bottom:46px;box-shadow:var(--shadow)}
+.eyebrow{color:#ba5d8a;font-size:12px;font-weight:800}
+.hero h1{font-size:clamp(28px,4.5vw,44px);line-height:1.12;margin:10px 0 12px;max-width:800px}
+.hero p{max-width:720px;color:#6b6273;margin:0 0 14px}
+.pill{display:inline-flex;gap:6px;padding:6px 12px;border-radius:99px;background:#fff;font-size:13px;font-weight:700;color:#986183;margin:3px 4px 3px 0}
+.edit{border-bottom:2px dashed #e9a0bf;padding:0 4px;background:#fffbe8;border-radius:4px}
+
+/* ===== 5. Tabelas ===== */
+.tw{overflow-x:auto;border-radius:16px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--lilac);color:#5d4d78;font-size:13px}
+tr:last-child td{border-bottom:0}
+
+/* ===== 6. KPI, fluxo, rodapé ===== */
+.meta{font-size:28px;font-weight:850;color:#b24e7e;margin:6px 0 2px}
+.formula{background:var(--yellow);border-radius:12px;padding:10px 12px;font-size:13px;color:#6e5a2a;margin-top:10px}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-top:10px}
+.flow div{flex:1 1 170px;border-radius:16px;padding:14px;font-weight:650;text-align:center}
+.flow span{align-self:center;font-size:22px;color:#c58aa8}
+footer{text-align:center;color:#9a909e;font-size:12px;margin-top:30px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tabb{background:#fff;border:1px solid var(--line);color:#706777;border-radius:99px;padding:10px 16px;font-weight:750;transition:.2s}
+.tabb:hover{background:var(--pink2)}.tabb.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+.frame{display:none}.frame.on{display:block}
+.frame iframe{width:100%;min-height:640px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow)}
+/* ===== 7. Responsivo, movimento reduzido e impressão ===== */
+@media(min-width:861px){nav{position:fixed;top:61px;left:0;bottom:0;width:210px;background:#fff;border-right:1px solid var(--line);padding:16px 12px;overflow-y:auto;z-index:9}.wrap{max-width:1346px;padding-left:226px}}
+@media(max-width:860px){#menuBtn{display:block}nav{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:8px 12px}nav.open{display:block}nav ul{flex-direction:column}.hero{padding:22px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media print{.top,nav,.noprint{display:none}.wrap{max-width:none;padding-left:16px}body{background:#fff}.card,.tw{box-shadow:none;break-inside:avoid}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+
+<!-- ===== CABEÇALHO FIXO ===== -->
+<header class="top">
+  <div class="brand"><div class="logo">🎓</div><div>Projeto de Extensão III · Administração<small>Escola Estadual Heloiza Therezinha Murbach Lacava</small></div></div>
+  <button id="menuBtn" aria-expanded="false" aria-controls="menu">☰ Menu</button>
+  <nav id="menu" aria-label="Seções">
+    <ul>
+      <li><a href="#apresentacao">Início</a></li><li><a href="#diagnostico">Diagnóstico</a></li><li><a href="#swot">SWOT</a></li>
+      <li><a href="#prioridades">Prioridades</a></li><li><a href="#propostas">Propostas</a></li><li><a href="#kpis">KPIs</a></li>
+      <li><a href="#5w2h">5W2H</a></li><li><a href="#acompanhamento">Avaliação</a></li><li><a href="#ferramentas">Ferramentas</a></li><li><a href="#conclusao">Conclusão</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="wrap">
+<noscript><div class="notice">Ative o JavaScript para ver os cartões de SWOT, KPIs e 5W2H.</div></noscript>
+
+<!-- ===== SEÇÃO 1: APRESENTAÇÃO ===== -->
+<section id="apresentacao">
+  <div class="hero">
+    <span class="eyebrow">Projeto de Extensão III · Curso de Administração · Faculdade de Americana (FAM)</span>
+    <h1>Comunicação, participação e organização na escola</h1>
+    <p><b>Objetivo geral:</b> propor ações simples, práticas e de baixo custo para fortalecer a comunicação entre escola e famílias, ampliar a participação da comunidade e melhorar a organização e a divulgação das atividades.</p>
+    <p><b>Problema identificado:</b> mesmo usando vários canais, a escola não consegue garantir que os responsáveis leiam os comunicados, e parte das famílias participa pouco de reuniões, eventos e projetos.</p>
+    <span class="pill">💬 Comunicação</span><span class="pill">🤝 Participação</span><span class="pill">🗓️ Organização</span>
+    <p style="margin-top:12px;font-size:13px">Professor(a): <span class="edit" contenteditable="true">clique para preencher</span> · Data da apresentação: <span class="edit" contenteditable="true">clique para preencher</span></p>
+    <button class="btn noprint" onclick="window.print()">🖨️ Imprimir / salvar em PDF</button>
+  </div>
+  <div class="grid">
+    <article class="card"><div class="ico bg-pink">💬</div><h3>Comunicação</h3><p>Fazer com que os comunicados cheguem, sejam lidos e compreendidos pelas famílias.</p></article>
+    <article class="card"><div class="ico bg-mint">🤝</div><h3>Participação</h3><p>Aproximar pais e responsáveis de reuniões, eventos e projetos escolares.</p></article>
+    <article class="card"><div class="ico bg-blue">🗓️</div><h3>Organização</h3><p>Planejar com antecedência, definir responsáveis, prazos e recursos.</p></article>
+  </div>
+  <h3 style="margin:26px 0 10px">Quem somos</h3>
+  <div class="grid">
+    <article class="card"><div class="ico bg-lilac">🏫</div><h3>Instituição</h3><p>Escola Estadual Heloiza Therezinha Murbach Lacava, Rua Inglaterra, 536, Jardim Europa, Santa Bárbara d’Oeste – SP.</p><p>Responsável: Carmem Maria Vasques Carrilho (Vice-Diretora). Questionário respondido também pelo diretor Nilson Ribeiro da Silva.</p></article>
+    <article class="card"><div class="ico bg-yellow">👩‍🎓</div><h3>Grupo (Extensão III – Etapa 01)</h3><p>Ana Julia Pereira Othz · Bianca Bala Gerez · Caico Leonardo Bertoluci Forssan · Emanuele Rodrigues de Andrade · Sérgio Manoel Silva Dornelas · Thaís Morais dos Santos · Thiago Monges Martins</p></article>
+  </div>
+</section>
+
+<!-- ===== SEÇÃO 2: DIAGNÓSTICO ===== -->
+<section id="diagnostico">
+  <h2 class="st">🔎 Diagnóstico institucional</h2>
+  <p class="lead">Baseado no questionário respondido pela direção em 15/10/2026 e na reunião inicial com a escola.</p>
+  <div class="grid">
+    <article class="card"><div class="ico bg-pink">📣</div><h3>Canais de comunicação</h3><ul><li>Grupos de WhatsApp por turma (o que melhor funciona: rápido e fica registrado)</li><li>Instagram da escola</li><li>Comunicados impressos, devolvidos com assinatura</li></ul></article>
+    <article class="card"><div class="ico bg-yellow">📅</div><h3>Planejamento</h3><p>Planejamento coletivo entre gestão, professores, funcionários e Grêmio. Existe um <b>painel mensal</b> com a agenda de atividades.</p></article>
+    <article class="card"><div class="ico bg-blue">📵</div><h3>Dificuldade de leitura</h3><p>Alguns responsáveis não leem as mensagens do WhatsApp ou não acompanham os comunicados, o que compromete o recebimento das informações.</p></article>
+    <article class="card"><div class="ico bg-mint">👨‍👩‍👧</div><h3>Participação das famílias</h3><p>Pais e responsáveis são o público com maior dificuldade de participar, principalmente por falta de tempo devido ao trabalho.</p></article>
+    <article class="card"><div class="ico bg-lilac">🎒</div><h3>Estudantes e Grêmio</h3><p>Estudantes são quem mais participa (eventos culturais, esportivos, projetos do Grêmio e ações de convivência). A equipe escolar também se envolve na organização.</p></article>
+    <article class="card"><div class="ico bg-pink">⏱️</div><h3>Dificuldades de organização</h3><ul><li>Conciliar horários e demandas pedagógicas</li><li>Envolver toda a equipe no planejamento</li><li>Garantir a participação das famílias</li><li>Pouco tempo disponível dos profissionais</li></ul></article>
+  </div>
+  <div class="grid" style="margin-top:16px">
+    <article class="card bg-mint"><h3>✅ Pontos positivos</h3><p>Equipe comprometida e colaborativa, Grêmio atuante, vários canais de comunicação e projetos pedagógicos, culturais e esportivos.</p></article>
+    <article class="card bg-yellow"><h3>⚠️ Limitações</h3><p>Falta de tempo das famílias, dificuldade de acesso à internet, recursos financeiros e materiais limitados.</p></article>
+    <article class="card bg-blue"><h3>🌱 Oportunidades</h3><p>Parcerias com comércio local, unidades de saúde, instituições sociais, universidades e órgãos públicos; campanhas solidárias; reuniões em horários acessíveis.</p></article>
+  </div>
+  <div class="notice info">💡 <b>Desejo da escola:</b> um canal institucional (aplicativo) para enviar comunicados e notificações e confirmar a leitura. Ainda não foi implantado.</div>
+</section>
+
+<!-- ===== SEÇÃO 3: SWOT ===== -->
+<section id="swot">
+  <h2 class="st">🧭 Análise SWOT</h2>
+  <p class="lead">Forças e ameaças têm níveis de relevância definidos no material do grupo. Fraquezas e oportunidades não receberam classificação, por isso não foram classificadas aqui.</p>
+  <div class="grid" id="swotGrid"></div>
+</section>
+
+<!-- ===== SEÇÃO 4: MATRIZ DE PRIORIDADES ===== -->
+<section id="prioridades">
+  <h2 class="st">🎯 Matriz de prioridades</h2>
+  <p class="lead">Três problemas foram ordenados por urgência e impacto.</p>
+  <div class="grid">
+    <article class="card"><div class="ico bg-pink">1º</div><h3>Falhas na comunicação entre escola e famílias</h3><span class="tag r">Urgência alta</span><span class="tag r">Impacto alto</span><p>É a base para que os responsáveis recebam e compreendam as informações escolares.</p></article>
+    <article class="card"><div class="ico bg-lilac">2º</div><h3>Baixa participação das famílias</h3><span class="tag r">Urgência alta</span><span class="tag r">Impacto alto</span><p>Afeta o envolvimento dos responsáveis em reuniões, eventos e projetos.</p></article>
+    <article class="card"><div class="ico bg-yellow">3º</div><h3>Falta de planejamento e divulgação antecipada</h3><span class="tag o">Urgência média</span><span class="tag r">Impacto alto</span><p>Pode melhorar com medidas simples: calendário mensal e avisos antecipados.</p></article>
+  </div>
+  <div class="notice info">⭐ <b>A comunicação é a prioridade principal.</b> As outras duas podem ser trabalhadas de forma integrada, pois a divulgação antecipada exige poucos recursos e pode começar junto com as demais ações.</div>
+</section>
+
+<!-- ===== SEÇÃO 5: PROPOSTAS DE MELHORIA ===== -->
+<section id="propostas">
+  <h2 class="st">💡 Propostas de melhoria</h2>
+  <p class="lead">Todas são propostas do grupo, derivadas do diagnóstico. Nenhuma foi implantada ainda.</p>
+  <div class="grid">
+    <article class="card"><div class="ico bg-pink">✍️</div><h3>Comunicados claros</h3><ul><li>Linguagem simples e objetiva</li><li>Datas, horários, locais e orientações bem destacados</li></ul><p><i>Finalidade: facilitar a compreensão.</i></p></article>
+    <article class="card"><div class="ico bg-blue">✅</div><h3>Confirmação de leitura</h3><ul><li>Reforçar avisos nos canais existentes</li><li>Usar mecanismos disponíveis (formulários, enquetes, assinaturas)</li><li>Identificar pendências e esclarecer dúvidas</li></ul><p><i>Finalidade: saber quem recebeu e ajudar quem não entendeu.</i></p></article>
+    <article class="card"><div class="ico bg-yellow">🗓️</div><h3>Planejamento e divulgação</h3><ul><li>Divulgar eventos com antecedência</li><li>Atualizar o calendário mensal</li><li>Definir responsáveis, prazos e recursos</li></ul><p><i>Finalidade: dar tempo às famílias de se organizarem.</i></p></article>
+    <article class="card"><div class="ico bg-mint">🤝</div><h3>Participação</h3><ul><li>Considerar horários mais acessíveis</li><li>Envolver estudantes e Grêmio em campanhas e eventos</li></ul><p><i>Finalidade: aproximar famílias e fortalecer o protagonismo.</i></p></article>
+  </div>
+  <div class="grid" style="margin-top:16px">
+    <article class="card bg-mint"><h3>🏫 Já existe na escola</h3><p>Grupos de WhatsApp por turma, Instagram, comunicados impressos assinados, painel mensal, reuniões de pais, registros de presença e fotos.</p></article>
+    <article class="card bg-yellow"><h3>🆕 Proposto, ainda não implantado</h3><p>Padronização dos comunicados, confirmação de leitura estruturada, acompanhamento de pendências, prazos de divulgação antecipada e horários alternativos.</p></article>
+  </div>
+</section>
+
+<!-- ===== SEÇÃO 6: KPIs ===== -->
+<section id="kpis">
+  <h2 class="st">📊 Indicadores (KPIs)</h2>
+  <p class="lead">As metas são as do documento de KPIs. As fórmulas são <b>sugestões operacionais</b> do grupo, pois o documento não as define.</p>
+  <div class="grid" id="kpiGrid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"></div>
+</section>
+
+<!-- ===== SEÇÃO 7: 5W2H ===== -->
+<section id="5w2h">
+  <h2 class="st">🛠️ Plano de ação 5W2H</h2>
+  <p class="lead">Plano original “Participação e Organização na Entidade Escolar”.</p>
+  <div class="tw"><table><thead><tr><th style="width:150px">Pergunta</th><th>Resposta</th></tr></thead><tbody id="w5Body"></tbody></table></div>
+  <h3 style="margin:28px 0 8px">Proposta complementar: comunicação com as famílias</h3>
+  <div class="notice">⚠️ Proposta <b>derivada do diagnóstico</b>, feita pelo grupo. Não faz parte do plano original aprovado.</div>
+  <div class="tw"><table><thead><tr><th style="width:150px">Pergunta</th><th>Resposta (sugestão)</th></tr></thead><tbody id="w5cBody"></tbody></table></div>
+</section>
+
+<!-- ===== SEÇÃO 8: ACOMPANHAMENTO ===== -->
+<section id="acompanhamento">
+  <h2 class="st">📈 Acompanhamento e avaliação</h2>
+  <p class="lead">Ainda não há resultados medidos. Esta seção mostra como o projeto poderá ser acompanhado.</p>
+  <div class="flow">
+    <div class="bg-pink">1. Ações<br><small>comunicados, calendário, eventos, Grêmio</small></div><span>→</span>
+    <div class="bg-lilac">2. Registros<br><small>leitura, presença, participação</small></div><span>→</span>
+    <div class="bg-blue">3. Indicadores<br><small>4 KPIs e suas metas</small></div><span>→</span>
+    <div class="bg-mint">4. Avaliação e ajustes<br><small>mensal e bimestral</small></div>
+  </div>
+  <div class="grid" style="margin-top:18px">
+    <article class="card"><h3>📝 O que registrar</h3><ul><li>Confirmações de leitura dos comunicados</li><li>Listas de presença em reuniões e eventos</li><li>Atividades planejadas × realizadas</li><li>Participação dos estudantes</li><li>Fotos, observações e retorno da comunidade</li></ul></article>
+    <article class="card"><h3>🔁 Quando avaliar</h3><p>Avaliação <b>mensal</b> dos registros e devolutivas; ao final de cada <b>bimestre</b>, a equipe gestora avalia avanços, identifica dificuldades e propõe ajustes (conforme o questionário).</p></article>
+  </div>
+</section>
+
+<!-- ===== FERRAMENTAS DE APOIO ESCOLAR ===== -->
+<section id="ferramentas">
+  <h2 class="st">🧰 Ferramentas de apoio escolar</h2>
+  <p class="lead">Duas ferramentas criadas pelo grupo para apoiar a escola na prática. Os dados digitados ficam salvos apenas neste navegador.</p>
+  <div class="tabs noprint" role="tablist">
+    <button class="tabb on" data-f="f1" role="tab">📋 Painel de Atividades e KPIs</button>
+    <button class="tabb" data-f="f2" role="tab">🌷 Aluno Protagonista</button>
+  </div>
+  <div class="frame on" id="f1"><iframe title="Painel de Atividades e KPIs" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;pt-BR&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Painel Escolar | Atividades e KPIs&lt;/title&gt;
+&lt;style&gt;
+:root{--ink:#35445a;--muted:#78859a;--paper:#fffdf9;--bg:#f7f5f1;--line:#e7e5e0;--lav:#e9e4f7;--blue:#dceaf8;--mint:#dff1e8;--peach:#f9e6d8;--yellow:#fbf0c9;--rose:#f7dfdf;--purple:#8577ad;--green:#4e9478;--red:#bf6b6b;--gold:#ad8b42}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:&quot;Trebuchet MS&quot;,Arial,sans-serif;color:var(--ink)}
+header{padding:28px clamp(18px,4vw,52px);background:#e9eff7;border-bottom:1px solid #dce4ef;position:relative;overflow:hidden}
+header:after{content:&quot;✿&quot;;position:absolute;right:5%;top:-30px;font-size:150px;color:#cfdced;opacity:.7;transform:rotate(-15deg)}
+.eyebrow{text-transform:uppercase;letter-spacing:1.7px;font-size:11px;font-weight:bold;color:#7d8ba2}
+h1{font-size:clamp(25px,3vw,36px);margin:8px 0;color:#344862}header p{margin:0;max-width:820px;line-height:1.55;color:#63738a;font-size:14px;position:relative;z-index:1}
+main{max-width:1450px;margin:auto;padding:24px clamp(12px,3vw,38px) 40px}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-bottom:18px}
+button,.filelabel{border:1px solid transparent;border-radius:10px;padding:10px 13px;font-weight:bold;font-size:12px;cursor:pointer;font-family:inherit}
+.primary{background:#dce8f7;color:#435d80;border-color:#cad9ec}.secondary,.filelabel{background:#fffdf9;border-color:#e5e1d9;color:#59677a}.filelabel input{display:none}.danger{background:#f8e5e3;color:#995858}
+.note{font-size:11px;color:var(--muted);flex:1 1 230px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 4px 12px #49566a08}
+.card:nth-child(1){border-top:4px solid #b9cce5}.card:nth-child(2){border-top:4px solid #a9d4c0}.card:nth-child(3){border-top:4px solid #e9cf8e}.card:nth-child(4){border-top:4px solid #e4b9b9}
+.card-label{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:bold}.number{font-size:30px;font-weight:bold;margin:9px 0 3px;color:#394c64}.card-sub{font-size:11px;color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:19px;margin-bottom:18px;box-shadow:0 4px 12px #49566a07}
+.panel-title{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+h2{font-size:18px;margin:0 0 5px;color:#3b4e66}.desc{font-size:12px;color:var(--muted);line-height:1.5}
+.formgrid{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1fr 1fr;gap:11px}
+.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:11px;font-weight:bold;color:#66748a}
+input,select,textarea{font-family:inherit;font-size:12px;color:var(--ink);padding:10px;border:1px solid #e0dfdc;border-radius:9px;background:#fff}
+textarea{resize:vertical;min-height:39px}.formrow2{display:grid;grid-template-columns:1.2fr 1.2fr 1fr 1.4fr auto;gap:11px;margin-top:11px;align-items:end}
+.board{display:grid;grid-template-columns:repeat(4,minmax(215px,1fr));gap:12px;overflow-x:auto;padding-bottom:4px}
+.lane{border-radius:13px;padding:12px;min-height:150px;background:#f4f4f2;border:1px solid #e8e6e1}
+.lane:nth-child(1){background:#f0f4fa}.lane:nth-child(2){background:#f2f0f9}.lane:nth-child(3){background:#fdf6e4}.lane:nth-child(4){background:#edf6f0}
+.lanehead{font-size:12px;font-weight:bold;display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;color:#53647b}.count{background:#fff9;border-radius:20px;padding:4px 8px}
+.task{background:#fffdfb;border:1px solid #e5e3df;border-left:4px solid #b8cbe4;border-radius:10px;padding:11px;margin-bottom:9px}
+.task.status-andamento{border-left-color:#b9b0df}.task.status-pendente{border-left-color:#e6cb7c}.task.status-concluida{border-left-color:#a9d4c0}.task.status-atrasada{border-left-color:#e0aaaa}
+.taskname{font-weight:bold;font-size:12px;line-height:1.45;margin-bottom:7px}.meta{font-size:11px;color:#778398;line-height:1.7}.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.tag{font-size:10px;border-radius:20px;padding:4px 7px;background:#edf0f5;color:#5e6d82;font-weight:bold}.tag.red{background:#f8e4e2;color:#a75d5d}.tag.green{background:#e2f2e9;color:#4d8b70}.tag.yellow{background:#fbf0d0;color:#94752f}
+.taskbuttons{display:flex;gap:5px;margin-top:8px}.taskbuttons button{font-size:10px;padding:5px 7px;background:#f0efec;color:#657185;border:0}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.filters input,.filters select{width:auto;min-width:150px}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:900px;font-size:11px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid #eeece7;vertical-align:top}th{background:#f4f3ef;color:#6e7a8c;text-transform:uppercase;letter-spacing:.4px;font-size:10px}tr:last-child td{border-bottom:0}
+.statuspill{display:inline-block;border-radius:20px;padding:4px 7px;font-size:10px;font-weight:bold}.p-pendente{background:#fbf0d0;color:#94752f}.p-andamento{background:#e9e4f7;color:#76669f}.p-concluida{background:#e2f2e9;color:#4d8b70}.p-atrasada{background:#f8e4e2;color:#a75d5d}
+.progress{height:7px;background:#eeece7;border-radius:10px;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:#a8cfbd;border-radius:10px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.kpi{border:1px solid var(--line);border-radius:11px;padding:13px;background:#fffefa}.kpi strong{display:block;font-size:12px;margin-bottom:6px}.kpi p{font-size:11px;color:var(--muted);line-height:1.5;margin:0}
+.empty{text-align:center;color:var(--muted);font-size:12px;padding:22px}.footer{text-align:center;color:#9299a5;font-size:10px;padding:9px}
+@media(max-width:950px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.formrow2{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.formgrid,.formrow2,.kpis{grid-template-columns:1fr}.panel{padding:13px}.cards{gap:8px}.card{padding:12px}.number{font-size:25px}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+ &lt;div class=&quot;eyebrow&quot;&gt;Organização • acompanhamento • melhoria contínua&lt;/div&gt;
+ &lt;h1&gt;🌷 Painel de Atividades da Escola&lt;/h1&gt;
+ &lt;p&gt;Um espaço visual para acompanhar eventos, reuniões, campanhas, projetos e demandas da equipe escolar. Veja o que está em andamento, o que foi concluído e o que precisa de atenção por causa do prazo.&lt;/p&gt;
+&lt;/header&gt;
+&lt;main&gt;
+ &lt;div class=&quot;toolbar&quot;&gt;
+  &lt;button class=&quot;primary&quot; onclick=&quot;document.getElementById(&#x27;atividade&#x27;).focus()&quot;&gt;＋ Cadastrar atividade&lt;/button&gt;
+  &lt;label class=&quot;filelabel&quot;&gt;⇧ Importar planilha CSV &lt;input id=&quot;csvFile&quot; type=&quot;file&quot; accept=&quot;.csv,text/csv&quot;&gt;&lt;/label&gt;
+  &lt;button class=&quot;secondary&quot; id=&quot;exportBtn&quot;&gt;⇩ Exportar planilha CSV&lt;/button&gt;
+  &lt;button class=&quot;secondary&quot; id=&quot;sampleBtn&quot;&gt;Ver exemplo preenchido&lt;/button&gt;
+  &lt;button class=&quot;danger&quot; id=&quot;clearBtn&quot;&gt;Limpar atividades&lt;/button&gt;
+  &lt;span class=&quot;note&quot;&gt;Dica: exporte o CSV para salvar ou compartilhar os dados com a equipe.&lt;/span&gt;
+ &lt;/div&gt;
+ &lt;section class=&quot;cards&quot;&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;card-label&quot;&gt;Total de atividades&lt;/div&gt;&lt;div class=&quot;number&quot; id=&quot;total&quot;&gt;0&lt;/div&gt;&lt;div class=&quot;card-sub&quot;&gt;Demandas cadastradas&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;card-label&quot;&gt;Concluídas&lt;/div&gt;&lt;div class=&quot;number&quot; id=&quot;done&quot;&gt;0%&lt;/div&gt;&lt;div class=&quot;card-sub&quot; id=&quot;doneSub&quot;&gt;0 atividades finalizadas&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;card-label&quot;&gt;Em andamento&lt;/div&gt;&lt;div class=&quot;number&quot; id=&quot;progressNum&quot;&gt;0&lt;/div&gt;&lt;div class=&quot;card-sub&quot;&gt;Atividades em execução&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;card-label&quot;&gt;Atrasadas&lt;/div&gt;&lt;div class=&quot;number&quot; id=&quot;late&quot;&gt;0&lt;/div&gt;&lt;div class=&quot;card-sub&quot;&gt;Precisam de acompanhamento&lt;/div&gt;&lt;/div&gt;
+ &lt;/section&gt;
+
+ &lt;section class=&quot;panel&quot;&gt;
+  &lt;div class=&quot;panel-title&quot;&gt;&lt;div&gt;&lt;h2&gt;✏️ Cadastro de atividade&lt;/h2&gt;&lt;div class=&quot;desc&quot;&gt;Inclua informações objetivas para que qualquer pessoa da equipe entenda o que precisa ser feito.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;form id=&quot;taskForm&quot;&gt;
+   &lt;div class=&quot;formgrid&quot;&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;atividade&quot;&gt;Atividade / entrega *&lt;/label&gt;&lt;input id=&quot;atividade&quot; required placeholder=&quot;Ex.: Enviar comunicado às famílias&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;responsavel&quot;&gt;Responsável *&lt;/label&gt;&lt;input id=&quot;responsavel&quot; required placeholder=&quot;Nome ou equipe&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;area&quot;&gt;Área / projeto&lt;/label&gt;&lt;select id=&quot;area&quot;&gt;&lt;option&gt;Comunicação&lt;/option&gt;&lt;option&gt;Eventos&lt;/option&gt;&lt;option&gt;Pedagógico&lt;/option&gt;&lt;option&gt;Administrativo&lt;/option&gt;&lt;option&gt;Famílias e comunidade&lt;/option&gt;&lt;option&gt;Infraestrutura&lt;/option&gt;&lt;option&gt;Outro&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;prazo&quot;&gt;Prazo final *&lt;/label&gt;&lt;input id=&quot;prazo&quot; type=&quot;date&quot; required&gt;&lt;/div&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;status&quot;&gt;Status&lt;/label&gt;&lt;select id=&quot;status&quot;&gt;&lt;option value=&quot;Pendente&quot;&gt;Pendente&lt;/option&gt;&lt;option value=&quot;Em andamento&quot;&gt;Em andamento&lt;/option&gt;&lt;option value=&quot;Concluída&quot;&gt;Concluída&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+   &lt;/div&gt;
+   &lt;div class=&quot;formrow2&quot;&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;prioridade&quot;&gt;Prioridade&lt;/label&gt;&lt;select id=&quot;prioridade&quot;&gt;&lt;option&gt;Normal&lt;/option&gt;&lt;option&gt;Alta&lt;/option&gt;&lt;option&gt;Urgente&lt;/option&gt;&lt;option&gt;Baixa&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;inicio&quot;&gt;Data de início&lt;/label&gt;&lt;input id=&quot;inicio&quot; type=&quot;date&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;progresso&quot;&gt;Progresso (%)&lt;/label&gt;&lt;input id=&quot;progresso&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;100&quot; value=&quot;0&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;observacoes&quot;&gt;Observações / próxima ação&lt;/label&gt;&lt;input id=&quot;observacoes&quot; placeholder=&quot;Ex.: Aguardar aprovação da direção&quot;&gt;&lt;/div&gt;
+    &lt;button class=&quot;primary&quot; type=&quot;submit&quot;&gt;＋ Adicionar&lt;/button&gt;
+   &lt;/div&gt;
+   &lt;div class=&quot;desc&quot; style=&quot;margin-top:10px&quot;&gt;* Campos obrigatórios. O status “Atrasada” é identificado automaticamente quando o prazo passou e a atividade ainda não foi concluída.&lt;/div&gt;
+  &lt;/form&gt;
+ &lt;/section&gt;
+
+ &lt;section class=&quot;panel&quot;&gt;
+  &lt;div class=&quot;panel-title&quot;&gt;&lt;div&gt;&lt;h2&gt;🗂️ Canvas visual de atividades&lt;/h2&gt;&lt;div class=&quot;desc&quot;&gt;As atividades são organizadas automaticamente por status. Use este quadro em reuniões de acompanhamento.&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;filters&quot;&gt;&lt;input id=&quot;search&quot; placeholder=&quot;Buscar atividade ou responsável…&quot;&gt;&lt;select id=&quot;filterArea&quot;&gt;&lt;option value=&quot;&quot;&gt;Todas as áreas&lt;/option&gt;&lt;option&gt;Comunicação&lt;/option&gt;&lt;option&gt;Eventos&lt;/option&gt;&lt;option&gt;Pedagógico&lt;/option&gt;&lt;option&gt;Administrativo&lt;/option&gt;&lt;option&gt;Famílias e comunidade&lt;/option&gt;&lt;option&gt;Infraestrutura&lt;/option&gt;&lt;option&gt;Outro&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;board&quot;&gt;
+   &lt;div class=&quot;lane&quot;&gt;&lt;div class=&quot;lanehead&quot;&gt;📝 Pendente &lt;span class=&quot;count&quot; id=&quot;countPend&quot;&gt;0&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;lanePend&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+   &lt;div class=&quot;lane&quot;&gt;&lt;div class=&quot;lanehead&quot;&gt;💜 Em andamento &lt;span class=&quot;count&quot; id=&quot;countProg&quot;&gt;0&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;laneProg&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+   &lt;div class=&quot;lane&quot;&gt;&lt;div class=&quot;lanehead&quot;&gt;🌼 Atrasada &lt;span class=&quot;count&quot; id=&quot;countLate&quot;&gt;0&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;laneLate&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+   &lt;div class=&quot;lane&quot;&gt;&lt;div class=&quot;lanehead&quot;&gt;🌱 Concluída &lt;span class=&quot;count&quot; id=&quot;countDone&quot;&gt;0&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;laneDone&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+ &lt;/section&gt;
+
+ &lt;section class=&quot;panel&quot;&gt;
+  &lt;div class=&quot;panel-title&quot;&gt;&lt;div&gt;&lt;h2&gt;📋 Lista detalhada&lt;/h2&gt;&lt;div class=&quot;desc&quot;&gt;Filtre, revise e edite o status das atividades. A tabela pode ser exportada para abrir no Excel ou Google Planilhas.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;tablewrap&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Atividade&lt;/th&gt;&lt;th&gt;Responsável&lt;/th&gt;&lt;th&gt;Área&lt;/th&gt;&lt;th&gt;Prazo&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;th&gt;Prioridade&lt;/th&gt;&lt;th&gt;Progresso&lt;/th&gt;&lt;th&gt;Observações&lt;/th&gt;&lt;th&gt;Ações&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody id=&quot;tbody&quot;&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+ &lt;/section&gt;
+
+ &lt;section class=&quot;panel&quot;&gt;
+  &lt;div class=&quot;panel-title&quot;&gt;&lt;div&gt;&lt;h2&gt;📈 KPIs para acompanhamento escolar&lt;/h2&gt;&lt;div class=&quot;desc&quot;&gt;Indicadores sugeridos para avaliar se o painel está ajudando a equipe a cumprir os prazos e organizar as demandas.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;kpis&quot;&gt;
+   &lt;div class=&quot;kpi&quot;&gt;&lt;strong&gt;1. Taxa de conclusão&lt;/strong&gt;&lt;p&gt;Fórmula: (atividades concluídas ÷ total de atividades) × 100. Acompanhar mensalmente e comparar com os períodos anteriores.&lt;/p&gt;&lt;/div&gt;
+   &lt;div class=&quot;kpi&quot;&gt;&lt;strong&gt;2. Taxa de atividades atrasadas&lt;/strong&gt;&lt;p&gt;Fórmula: (atividades atrasadas ÷ total de atividades não concluídas) × 100. Ajuda a identificar gargalos e demandas que precisam de apoio.&lt;/p&gt;&lt;/div&gt;
+   &lt;div class=&quot;kpi&quot;&gt;&lt;strong&gt;3. Cumprimento de prazos&lt;/strong&gt;&lt;p&gt;Fórmula: (atividades concluídas até o prazo ÷ atividades concluídas) × 100. Registre a data real de conclusão para medir com precisão.&lt;/p&gt;&lt;/div&gt;
+   &lt;div class=&quot;kpi&quot;&gt;&lt;strong&gt;4. Atividades por responsável&lt;/strong&gt;&lt;p&gt;Quantidade de demandas abertas por pessoa ou equipe. Ajuda a visualizar a distribuição do trabalho e evitar sobrecarga.&lt;/p&gt;&lt;/div&gt;
+   &lt;div class=&quot;kpi&quot;&gt;&lt;strong&gt;5. Tempo médio de conclusão&lt;/strong&gt;&lt;p&gt;Média de dias entre a data de início e a conclusão. Útil para estimar prazos futuros e melhorar o planejamento.&lt;/p&gt;&lt;/div&gt;
+   &lt;div class=&quot;kpi&quot;&gt;&lt;strong&gt;6. Atualização do painel&lt;/strong&gt;&lt;p&gt;Percentual de atividades com responsável, prazo e status atualizados. Defina uma rotina semanal de revisão com a equipe.&lt;/p&gt;&lt;/div&gt;
+  &lt;/div&gt;
+ &lt;/section&gt;
+ &lt;div class=&quot;footer&quot;&gt;Painel demonstrativo para gestão escolar • Recomenda-se revisar as atividades semanalmente com os responsáveis.&lt;/div&gt;
+&lt;/main&gt;
+&lt;script&gt;
+const tasks=[];
+let nextId=1;
+const $=id=&gt;document.getElementById(id);
+const escapeHTML=s=&gt;String(s??&#x27;&#x27;).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g,c=&gt;({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[c]));
+const today=()=&gt;{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
+function actualStatus(t){if(t.status!==&#x27;Concluída&#x27;&amp;&amp;t.prazo&amp;&amp;t.prazo&lt;today())return &#x27;Atrasada&#x27;;return t.status}
+function fmtDate(s){if(!s)return &#x27;—&#x27;;const [y,m,d]=s.split(&#x27;-&#x27;);return `${d}/${m}/${y}`}
+function statusClass(s){return s===&#x27;Atrasada&#x27;?&#x27;atrasada&#x27;:s===&#x27;Concluída&#x27;?&#x27;concluida&#x27;:s===&#x27;Em andamento&#x27;?&#x27;andamento&#x27;:&#x27;pendente&#x27;}
+function statusPill(s){return `&lt;span class=&quot;statuspill p-${statusClass(s)}&quot;&gt;${escapeHTML(s)}&lt;/span&gt;`}
+function filtered(){const q=$(&#x27;search&#x27;).value.toLowerCase().trim(),a=$(&#x27;filterArea&#x27;).value;return tasks.filter(t=&gt;(!q||(t.atividade+&#x27; &#x27;+t.responsavel+&#x27; &#x27;+t.observacoes).toLowerCase().includes(q))&amp;&amp;(!a||t.area===a))}
+function card(t){const s=actualStatus(t),cl=statusClass(s),priority=t.prioridade===&#x27;Urgente&#x27;?&#x27;red&#x27;:t.prioridade===&#x27;Alta&#x27;?&#x27;yellow&#x27;:&#x27;&#x27;,pct=s===&#x27;Concluída&#x27;?100:Number(t.progresso||0);return `&lt;article class=&quot;task status-${cl}&quot;&gt;&lt;div class=&quot;taskname&quot;&gt;${escapeHTML(t.atividade)}&lt;/div&gt;&lt;div class=&quot;meta&quot;&gt;👤 ${escapeHTML(t.responsavel)}&lt;br&gt;📅 Prazo: ${fmtDate(t.prazo)}&lt;br&gt;🏫 ${escapeHTML(t.area)}&lt;/div&gt;&lt;div class=&quot;tags&quot;&gt;&lt;span class=&quot;tag ${s===&#x27;Atrasada&#x27;?&#x27;red&#x27;:s===&#x27;Concluída&#x27;?&#x27;green&#x27;:s===&#x27;Pendente&#x27;?&#x27;yellow&#x27;:&#x27;&#x27;}&quot;&gt;${escapeHTML(s)}&lt;/span&gt;&lt;span class=&quot;tag ${priority}&quot;&gt;${escapeHTML(t.prioridade)}&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;progress&quot;&gt;&lt;span style=&quot;width:${Math.max(0,Math.min(100,pct))}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;meta&quot;&gt;${pct}% concluído${t.observacoes?&#x27;&lt;br&gt;↳ &#x27;+escapeHTML(t.observacoes):&#x27;&#x27;}&lt;/div&gt;&lt;div class=&quot;taskbuttons&quot;&gt;&lt;button onclick=&quot;cycleStatus(${t.id})&quot;&gt;Alterar status&lt;/button&gt;&lt;button onclick=&quot;editTask(${t.id})&quot;&gt;Editar&lt;/button&gt;&lt;button onclick=&quot;removeTask(${t.id})&quot;&gt;Excluir&lt;/button&gt;&lt;/div&gt;&lt;/article&gt;`}
+function render(){const visible=filtered();const groups={&#x27;Pendente&#x27;:[],&#x27;Em andamento&#x27;:[],&#x27;Atrasada&#x27;:[],&#x27;Concluída&#x27;:[]};visible.forEach(t=&gt;groups[actualStatus(t)].push(t));const map=[[&#x27;Pendente&#x27;,&#x27;lanePend&#x27;,&#x27;countPend&#x27;],[&#x27;Em andamento&#x27;,&#x27;laneProg&#x27;,&#x27;countProg&#x27;],[&#x27;Atrasada&#x27;,&#x27;laneLate&#x27;,&#x27;countLate&#x27;],[&#x27;Concluída&#x27;,&#x27;laneDone&#x27;,&#x27;countDone&#x27;]];map.forEach(([s,el,count])=&gt;{$(el).innerHTML=groups[s].map(card).join(&#x27;&#x27;)||&#x27;&lt;div class=&quot;empty&quot;&gt;Nenhuma atividade&lt;/div&gt;&#x27;;$(count).textContent=groups[s].length});
+const total=tasks.length,done=tasks.filter(t=&gt;actualStatus(t)===&#x27;Concluída&#x27;).length,prog=tasks.filter(t=&gt;actualStatus(t)===&#x27;Em andamento&#x27;).length,late=tasks.filter(t=&gt;actualStatus(t)===&#x27;Atrasada&#x27;).length;
+$(&#x27;total&#x27;).textContent=total;$(&#x27;done&#x27;).textContent=(total?Math.round(done/total*100):0)+&#x27;%&#x27;;$(&#x27;doneSub&#x27;).textContent=`${done} de ${total} atividades finalizadas`;$(&#x27;progressNum&#x27;).textContent=prog;$(&#x27;late&#x27;).textContent=late;
+$(&#x27;tbody&#x27;).innerHTML=visible.map(t=&gt;{const s=actualStatus(t),pct=s===&#x27;Concluída&#x27;?100:Number(t.progresso||0);return `&lt;tr&gt;&lt;td&gt;&lt;strong&gt;${escapeHTML(t.atividade)}&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;${escapeHTML(t.responsavel)}&lt;/td&gt;&lt;td&gt;${escapeHTML(t.area)}&lt;/td&gt;&lt;td&gt;${fmtDate(t.prazo)}&lt;/td&gt;&lt;td&gt;${statusPill(s)}&lt;/td&gt;&lt;td&gt;${escapeHTML(t.prioridade)}&lt;/td&gt;&lt;td&gt;${pct}%&lt;/td&gt;&lt;td&gt;${escapeHTML(t.observacoes||&#x27;—&#x27;)}&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;secondary&quot; onclick=&quot;editTask(${t.id})&quot;&gt;Editar&lt;/button&gt; &lt;button class=&quot;danger&quot; onclick=&quot;removeTask(${t.id})&quot;&gt;Excluir&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;`}).join(&#x27;&#x27;)||&#x27;&lt;tr&gt;&lt;td colspan=&quot;9&quot; class=&quot;empty&quot;&gt;Nenhuma atividade encontrada. Cadastre uma ou importe um CSV.&lt;/td&gt;&lt;/tr&gt;&#x27;}
+$(&#x27;taskForm&#x27;).addEventListener(&#x27;submit&#x27;,e=&gt;{e.preventDefault();tasks.push({id:nextId++,atividade:$(&#x27;atividade&#x27;).value.trim(),responsavel:$(&#x27;responsavel&#x27;).value.trim(),area:$(&#x27;area&#x27;).value,prazo:$(&#x27;prazo&#x27;).value,status:$(&#x27;status&#x27;).value,prioridade:$(&#x27;prioridade&#x27;).value,inicio:$(&#x27;inicio&#x27;).value,progresso:Number($(&#x27;progresso&#x27;).value||0),observacoes:$(&#x27;observacoes&#x27;).value.trim()});e.target.reset();$(&#x27;progresso&#x27;).value=0;render()});
+function cycleStatus(id){const t=tasks.find(x=&gt;x.id===id);if(!t)return;const options=[&#x27;Pendente&#x27;,&#x27;Em andamento&#x27;,&#x27;Concluída&#x27;];t.status=options[(options.indexOf(t.status)+1)%options.length];if(t.status===&#x27;Concluída&#x27;)t.progresso=100;render()}
+function editTask(id){const t=tasks.find(x=&gt;x.id===id);if(!t)return;const v=prompt(&#x27;Novo status: Pendente, Em andamento ou Concluída&#x27;,t.status);if(v===null)return;const match=[&#x27;Pendente&#x27;,&#x27;Em andamento&#x27;,&#x27;Concluída&#x27;].find(x=&gt;x.toLowerCase()===v.trim().toLowerCase());if(!match){alert(&#x27;Status inválido. Use Pendente, Em andamento ou Concluída.&#x27;);return}t.status=match;if(match===&#x27;Concluída&#x27;)t.progresso=100;else{const p=prompt(&#x27;Progresso de 0 a 100:&#x27;,String(t.progresso||0));if(p!==null&amp;&amp;p.trim()!==&#x27;&#x27;&amp;&amp;!isNaN(Number(p)))t.progresso=Math.max(0,Math.min(100,Number(p)))}render()}
+function removeTask(id){if(confirm(&#x27;Excluir esta atividade?&#x27;)){const i=tasks.findIndex(t=&gt;t.id===id);if(i&gt;=0)tasks.splice(i,1);render()}}
+$(&#x27;search&#x27;).addEventListener(&#x27;input&#x27;,render);$(&#x27;filterArea&#x27;).addEventListener(&#x27;change&#x27;,render);
+function csvEscape(v){return &#x27;&quot;&#x27;+String(v??&#x27;&#x27;).replace(/&quot;/g,&#x27;&quot;&quot;&#x27;)+&#x27;&quot;&#x27;}
+const headers=[&#x27;Atividade&#x27;,&#x27;Responsável&#x27;,&#x27;Área&#x27;,&#x27;Prazo&#x27;,&#x27;Status&#x27;,&#x27;Prioridade&#x27;,&#x27;Data de início&#x27;,&#x27;Progresso&#x27;,&#x27;Observações&#x27;];
+function toCSV(rows){return &#x27;\ufeff&#x27;+[headers,...rows.map(t=&gt;[t.atividade,t.responsavel,t.area,t.prazo,t.status,t.prioridade,t.inicio,t.progresso,t.observacoes])].map(r=&gt;r.map(csvEscape).join(&#x27;;&#x27;)).join(&#x27;\r\n&#x27;)}
+$(&#x27;exportBtn&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{const blob=new Blob([toCSV(tasks)],{type:&#x27;text/csv;charset=utf-8;&#x27;}),url=URL.createObjectURL(blob),a=document.createElement(&#x27;a&#x27;);a.href=url;a.download=&#x27;painel_atividades_escolares.csv&#x27;;a.click();URL.revokeObjectURL(url)});
+function parseCSV(text){const first=text.split(/\r?\n/,1)[0];const sep=(first.match(/;/g)||[]).length&gt;(first.match(/,/g)||[]).length?&#x27;;&#x27;:&#x27;,&#x27;;const rows=[];let row=[],cell=&#x27;&#x27;,quoted=false;for(let i=0;i&lt;text.length;i++){const c=text[i];if(c===&#x27;&quot;&#x27;&amp;&amp;quoted&amp;&amp;text[i+1]===&#x27;&quot;&#x27;){cell+=&#x27;&quot;&#x27;;i++}else if(c===&#x27;&quot;&#x27;){quoted=!quoted}else if(c===sep&amp;&amp;!quoted){row.push(cell);cell=&#x27;&#x27;}else if((c===&#x27;\n&#x27;||c===&#x27;\r&#x27;)&amp;&amp;!quoted){if(c===&#x27;\r&#x27;&amp;&amp;text[i+1]===&#x27;\n&#x27;)i++;row.push(cell);if(row.some(x=&gt;x.trim()))rows.push(row);row=[];cell=&#x27;&#x27;}else cell+=c}row.push(cell);if(row.some(x=&gt;x.trim()))rows.push(row);return rows}
+$(&#x27;csvFile&#x27;).addEventListener(&#x27;change&#x27;,async e=&gt;{const file=e.target.files[0];if(!file)return;try{const rows=parseCSV((await file.text()).replace(/^\ufeff/,&#x27;&#x27;));if(rows.length&lt;2)throw Error(&#x27;A planilha não contém linhas de atividades.&#x27;);const norm=s=&gt;s.normalize(&#x27;NFD&#x27;).replace(/[\u0300-\u036f]/g,&#x27;&#x27;).toLowerCase().trim();const h=rows[0].map(norm);const find=(...names)=&gt;{for(const n of names){const i=h.indexOf(norm(n));if(i&gt;=0)return i}return -1};const ix={atividade:find(&#x27;Atividade&#x27;,&#x27;Atividade / entrega&#x27;,&#x27;Tarefa&#x27;),responsavel:find(&#x27;Responsável&#x27;,&#x27;Responsavel&#x27;),area:find(&#x27;Área&#x27;,&#x27;Area&#x27;,&#x27;Área / projeto&#x27;),prazo:find(&#x27;Prazo&#x27;,&#x27;Prazo final&#x27;),status:find(&#x27;Status&#x27;),prioridade:find(&#x27;Prioridade&#x27;),inicio:find(&#x27;Data de início&#x27;,&#x27;Data de inicio&#x27;),progresso:find(&#x27;Progresso&#x27;,&#x27;Progresso (%)&#x27;),observacoes:find(&#x27;Observações&#x27;,&#x27;Observacoes&#x27;,&#x27;Observações / próxima ação&#x27;)};if(ix.atividade&lt;0||ix.responsavel&lt;0||ix.prazo&lt;0)throw Error(&#x27;A planilha precisa ter pelo menos as colunas Atividade, Responsável e Prazo. Use o modelo exportado pelo painel como referência.&#x27;);let count=0;rows.slice(1).forEach(r=&gt;{const get=k=&gt;ix[k]&gt;=0?(r[ix[k]]||&#x27;&#x27;).trim():&#x27;&#x27;;if(!get(&#x27;atividade&#x27;))return;let st=get(&#x27;status&#x27;);const valid=[&#x27;Pendente&#x27;,&#x27;Em andamento&#x27;,&#x27;Concluída&#x27;];if(!valid.some(x=&gt;x.toLowerCase()===st.toLowerCase()))st=&#x27;Pendente&#x27;;else st=valid.find(x=&gt;x.toLowerCase()===st.toLowerCase());let prazo=get(&#x27;prazo&#x27;);if(/^\d{2}\/\d{2}\/\d{4}$/.test(prazo)){const [d,m,y]=prazo.split(&#x27;/&#x27;);prazo=`${y}-${m}-${d}`}tasks.push({id:nextId++,atividade:get(&#x27;atividade&#x27;),responsavel:get(&#x27;responsavel&#x27;)||&#x27;Não definido&#x27;,area:get(&#x27;area&#x27;)||&#x27;Outro&#x27;,prazo,status:st,prioridade:get(&#x27;prioridade&#x27;)||&#x27;Normal&#x27;,inicio:get(&#x27;inicio&#x27;),progresso:Math.max(0,Math.min(100,Number(get(&#x27;progresso&#x27;).replace(&#x27;%&#x27;,&#x27;&#x27;))||0)),observacoes:get(&#x27;observacoes&#x27;)});count++});render();alert(`${count} atividade(s) importada(s). Confira os prazos e status.`)}catch(err){alert(&#x27;Não foi possível importar: &#x27;+err.message)}e.target.value=&#x27;&#x27;});
+$(&#x27;sampleBtn&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(tasks.length&amp;&amp;!confirm(&#x27;Adicionar exemplos às atividades atuais?&#x27;))return;const d=(n)=&gt;{const x=new Date();x.setDate(x.getDate()+n);return new Date(x.getTime()-x.getTimezoneOffset()*60000).toISOString().slice(0,10)};[{atividade:&#x27;Enviar comunicado da reunião de responsáveis&#x27;,responsavel:&#x27;Coordenação&#x27;,area:&#x27;Comunicação&#x27;,prazo:d(3),status:&#x27;Em andamento&#x27;,prioridade:&#x27;Alta&#x27;,inicio:d(-1),progresso:60,observacoes:&#x27;Revisar texto antes do envio&#x27;},{atividade:&#x27;Organizar calendário de eventos do mês&#x27;,responsavel:&#x27;Secretaria escolar&#x27;,area:&#x27;Eventos&#x27;,prazo:d(-2),status:&#x27;Em andamento&#x27;,prioridade:&#x27;Urgente&#x27;,inicio:d(-7),progresso:40,observacoes:&#x27;Falta confirmar duas datas&#x27;},{atividade:&#x27;Atualizar mural de avisos&#x27;,responsavel:&#x27;Equipe administrativa&#x27;,area:&#x27;Administrativo&#x27;,prazo:d(5),status:&#x27;Pendente&#x27;,prioridade:&#x27;Normal&#x27;,inicio:&#x27;&#x27;,progresso:0,observacoes:&#x27;Separar comunicados por turma&#x27;},{atividade:&#x27;Realizar campanha de leitura&#x27;,responsavel:&#x27;Equipe pedagógica&#x27;,area:&#x27;Pedagógico&#x27;,prazo:d(-4),status:&#x27;Concluída&#x27;,prioridade:&#x27;Normal&#x27;,inicio:d(-12),progresso:100,observacoes:&#x27;Registrar participação dos estudantes&#x27;},{atividade:&#x27;Confirmar materiais para feira escolar&#x27;,responsavel:&#x27;Comissão de eventos&#x27;,area:&#x27;Eventos&#x27;,prazo:d(1),status:&#x27;Em andamento&#x27;,prioridade:&#x27;Alta&#x27;,inicio:d(-3),progresso:75,observacoes:&#x27;Aguardar retorno de fornecedor&#x27;}].forEach(t=&gt;tasks.push({...t,id:nextId++}));render()});
+$(&#x27;clearBtn&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(confirm(&#x27;Remover todas as atividades deste painel? Exporte o CSV antes, se precisar guardar os dados.&#x27;)){tasks.splice(0,tasks.length);render()}});
+render();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></div>
+  <div class="frame" id="f2"><iframe title="Aluno Protagonista" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;pt-BR&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;Escola Estadual Heloíza Therezinha Murbach Lacava | Aluno Protagonista&lt;/title&gt;
+&lt;style&gt;
+:root{--pink:#e98db6;--pink2:#fff0f6;--lilac:#eee9ff;--mint:#e3f6ed;--blue:#e8f3ff;--ink:#3d3544;--muted:#817887;--line:#eee6ef;--white:#fff;--shadow:0 12px 35px #48354d0d}
+*{box-sizing:border-box}body{margin:0;background:#fffafd;color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}a{color:inherit}.top{background:#fff;position:sticky;top:0;z-index:4;border-bottom:1px solid var(--line);padding:13px max(18px,calc((100% - 1120px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:11px;font-weight:800}.logo{width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,#ffd7e8,#e4ddff);display:grid;place-items:center;font-size:22px}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500}.wrap{max-width:1120px;margin:auto;padding:28px 18px 60px}.hero{padding:30px;border-radius:26px;background:linear-gradient(120deg,#fff0f6,#f4f0ff 65%,#effaf4);margin-bottom:22px;position:relative;overflow:hidden}.eyebrow{color:#ba5d8a;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:1.4px}.hero h1{font-size:clamp(27px,4vw,40px);line-height:1.12;margin:9px 0 12px;max-width:750px}.hero p{max-width:700px;color:#746a7c;margin:0}.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;background:#fff;font-size:12px;font-weight:700;color:#986183}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:21px;padding:22px;box-shadow:var(--shadow)}.card h2,.panel h2{margin:7px 0 8px;font-size:20px}.card p,.muted{color:var(--muted)}.role-icon{width:50px;height:50px;border-radius:17px;display:grid;place-items:center;font-size:25px;background:var(--pink2)}.btn{background:#d96e9f;color:white;border-radius:12px;padding:11px 15px;font-weight:750;box-shadow:0 5px 12px #d96e9f26}.btn:hover{filter:brightness(.97)}.btn.secondary{background:#f2edf8;color:#665a70;box-shadow:none}.btn.mint{background:#dff4e9;color:#326f56;box-shadow:none}.btn.danger{background:#fff0f0;color:#b74e5b;box-shadow:none}.btn.small{padding:7px 10px;font-size:13px}.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.hidden{display:none!important}.notice{border-radius:14px;background:#fff8e9;border:1px solid #f6e5bd;color:#775f34;padding:12px 15px;font-size:13px;margin:15px 0}.notice.info{background:#eff7ff;border-color:#d8eaff;color:#45627c}.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:18px}.sidebar{align-self:start;background:#fff;border:1px solid var(--line);border-radius:19px;padding:10px;display:grid;gap:5px}.nav{padding:12px;text-align:left;border-radius:11px;background:transparent;color:#706777;font-weight:650}.nav.active,.nav:hover{background:var(--pink2);color:#b24e7e}.main{min-width:0}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}.stat{border:1px solid var(--line);border-radius:16px;padding:16px;background:white}.stat strong{display:block;font-size:27px}.stat span{font-size:12px;color:var(--muted)}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}.sectionhead h2{margin:0}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-weight:700;font-size:13px}.field input,.field textarea,.field select,input.search{width:100%;border:1px solid #e8dfe9;border-radius:11px;padding:11px 12px;background:#fff;color:var(--ink);outline-color:#e9a0bf}.field textarea{min-height:105px;resize:vertical}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.full{grid-column:1/-1}.campaignlist,.ideas{display:grid;gap:12px}.campaign,.idea{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}.campaign-top,.idea-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.tag{background:#f4effb;color:#77628e;padding:4px 9px;border-radius:99px;font-size:11px;font-weight:800;white-space:nowrap}.tag.green{background:#e6f7ee;color:#39795c}.tag.orange{background:#fff1dc;color:#916a2e}.campaign h3,.idea h3{margin:7px 0 4px}.campaign p,.idea p{margin:5px 0;color:#746b7b;white-space:pre-wrap}.idea-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:13px;padding-top:11px;border-top:1px solid #f2edf3}.vote{display:flex;align-items:center;gap:7px}.vote button{background:color-mix(in srgb,var(--campaign-primary,#fceaf2) 15%,white);color:var(--campaign-primary,#b44f7d);border-radius:10px;padding:8px 11px;font-weight:800}.vote button.voted{background:#dff4e9;color:#326f56}#public{--campaign-primary:#d96e9f;--campaign-bg:#fff0f6;background:color-mix(in srgb,var(--campaign-bg) 22%,white);border-radius:22px;padding:14px}#public .panel{border-color:color-mix(in srgb,var(--campaign-primary) 18%,var(--line));background:color-mix(in srgb,var(--campaign-bg) 16%,white)}#public .panel h2{color:color-mix(in srgb,var(--campaign-primary) 75%,var(--ink))}#public .field input,#public .field textarea,#public .field select{border-color:color-mix(in srgb,var(--campaign-primary) 22%,#e8dfe9)}#public .field input:focus,#public .field textarea:focus,#public .field select:focus{outline-color:var(--campaign-primary)}#public .btn:not(.secondary):not(.mint):not(.danger){background:var(--campaign-primary)}#public .idea{border-color:color-mix(in srgb,var(--campaign-primary) 20%,var(--line));background:color-mix(in srgb,var(--campaign-bg) 10%,white)}#public .notice.info{background:color-mix(in srgb,var(--campaign-bg) 35%,white);border-color:color-mix(in srgb,var(--campaign-primary) 20%,#d8eaff)}.color-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.color-field{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px}.color-field input[type=color]{width:48px;height:38px;border:0;background:transparent;padding:0;cursor:pointer}.color-preview{border-radius:14px;padding:14px;border:1px solid var(--line);margin:5px 0 14px}.color-preview strong{display:block;margin-bottom:4px}@media(max-width:520px){.color-options{grid-template-columns:1fr}}.footer{text-align:center;color:#9a909e;font-size:12px;margin-top:30px}.empty{padding:28px;text-align:center;border:1px dashed #e6dce8;border-radius:15px;color:var(--muted)}.linkbox{display:flex;gap:8px;flex-wrap:wrap}.linkbox input{flex:1;min-width:180px;border:1px solid var(--line);border-radius:10px;padding:10px}.publichead{margin-bottom:18px}.publichead .back{color:#a34c78;font-weight:750;text-decoration:none}.publictitle{font-size:clamp(27px,4vw,38px);margin:8px 0}.smalltext{font-size:12px;color:var(--muted)}hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media(max-width:760px){.cards{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stat{padding:12px}.stat strong{font-size:22px}.hero{padding:22px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.top{padding:11px 15px}.wrap{padding:18px 12px 40px}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header class=&quot;top&quot;&gt;&lt;div class=&quot;brand&quot;&gt;&lt;div class=&quot;logo&quot;&gt;🌷&lt;/div&gt;&lt;div&gt;Escola Estadual Heloíza Therezinha Murbach Lacava&lt;small&gt;Aluno Protagonista · campanhas com participação&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;button id=&quot;homeBtn&quot; class=&quot;btn secondary small hidden&quot; onclick=&quot;goHome()&quot;&gt;⌂ Início&lt;/button&gt;&lt;/header&gt;
+&lt;div class=&quot;wrap&quot;&gt;
+&lt;section id=&quot;home&quot;&gt;
+ &lt;div class=&quot;hero&quot;&gt;&lt;span class=&quot;eyebrow&quot;&gt;Escola Estadual Heloíza Therezinha Murbach Lacava · Administração&lt;/span&gt;&lt;h1&gt;Central de campanhas escolares&lt;/h1&gt;&lt;p&gt;Versão provisória sem login: crie campanhas, revise propostas e acompanhe a participação dos alunos.&lt;/p&gt;&lt;/div&gt;
+ &lt;div class=&quot;notice info&quot;&gt;&lt;b&gt;Versão provisória sem login:&lt;/b&gt; qualquer pessoa com o link poderá abrir o painel administrativo. Use apenas para testes e não inclua informações confidenciais. Os dados ficam salvos somente neste navegador e não são compartilhados automaticamente com outros dispositivos.&lt;/div&gt;
+ &lt;div class=&quot;cards&quot; style=&quot;grid-template-columns:minmax(0,560px)&quot;&gt;
+  &lt;article class=&quot;card&quot;&gt;&lt;div class=&quot;role-icon&quot;&gt;🏫&lt;/div&gt;&lt;h2&gt;Área administrativa&lt;/h2&gt;&lt;p&gt;Crie campanhas, importe informações, aprove ou recuse ideias enviadas e acompanhe as votações.&lt;/p&gt;&lt;button class=&quot;btn&quot; onclick=&quot;showAdmin()&quot;&gt;Entrar no painel administrativo →&lt;/button&gt;&lt;/article&gt;
+ &lt;/div&gt;
+ &lt;div class=&quot;footer&quot;&gt;Gestão de campanhas e protagonismo estudantil.&lt;/div&gt;
+&lt;/section&gt;
+&lt;section id=&quot;admin&quot; class=&quot;hidden&quot;&gt;
+ &lt;div class=&quot;hero&quot;&gt;&lt;span class=&quot;eyebrow&quot;&gt;Acesso provisório sem login&lt;/span&gt;&lt;h1&gt;Central de campanhas&lt;/h1&gt;&lt;p&gt;Organize cada ação em sua própria página e acompanhe a participação dos alunos.&lt;/p&gt;&lt;/div&gt;
+ 
+ &lt;div class=&quot;layout&quot;&gt;&lt;nav class=&quot;sidebar&quot;&gt;&lt;button class=&quot;nav active&quot; data-tab=&quot;overview&quot; onclick=&quot;tab(&#x27;overview&#x27;,this)&quot;&gt;📊 Visão geral&lt;/button&gt;&lt;button class=&quot;nav&quot; data-tab=&quot;create&quot; onclick=&quot;tab(&#x27;create&#x27;,this)&quot;&gt;✨ Criar campanha&lt;/button&gt;&lt;button class=&quot;nav&quot; data-tab=&quot;manage&quot; onclick=&quot;tab(&#x27;manage&#x27;,this)&quot;&gt;📚 Minhas campanhas&lt;/button&gt;&lt;button class=&quot;nav&quot; data-tab=&quot;moderate&quot; onclick=&quot;tab(&#x27;moderate&#x27;,this)&quot;&gt;🛡️ Moderar ideias&lt;/button&gt;&lt;/nav&gt;
+ &lt;main class=&quot;main&quot;&gt;
+  &lt;section id=&quot;tab-overview&quot; class=&quot;adminTab&quot;&gt;&lt;div class=&quot;stats&quot;&gt;&lt;div class=&quot;stat&quot;&gt;&lt;span&gt;Campanhas criadas&lt;/span&gt;&lt;strong id=&quot;statCampaigns&quot;&gt;0&lt;/strong&gt;&lt;/div&gt;&lt;div class=&quot;stat&quot;&gt;&lt;span&gt;Ideias recebidas&lt;/span&gt;&lt;strong id=&quot;statIdeas&quot;&gt;0&lt;/strong&gt;&lt;/div&gt;&lt;div class=&quot;stat&quot;&gt;&lt;span&gt;Ideias aguardando revisão&lt;/span&gt;&lt;strong id=&quot;statPending&quot;&gt;0&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;panel&quot;&gt;&lt;div class=&quot;sectionhead&quot;&gt;&lt;h2&gt;Campanhas recentes&lt;/h2&gt;&lt;button class=&quot;btn small&quot; onclick=&quot;tab(&#x27;create&#x27;)&quot;&gt;+ Nova campanha&lt;/button&gt;&lt;/div&gt;&lt;div id=&quot;recentCampaigns&quot; class=&quot;campaignlist&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;
+  &lt;section id=&quot;tab-create&quot; class=&quot;adminTab hidden&quot;&gt;&lt;div class=&quot;panel&quot;&gt;&lt;div class=&quot;sectionhead&quot;&gt;&lt;h2&gt;Criar uma campanha&lt;/h2&gt;&lt;span class=&quot;tag&quot;&gt;Página exclusiva&lt;/span&gt;&lt;/div&gt;&lt;form id=&quot;createForm&quot;&gt;&lt;div class=&quot;formgrid&quot;&gt;&lt;div class=&quot;field full&quot;&gt;&lt;label for=&quot;cTitle&quot;&gt;Nome da campanha *&lt;/label&gt;&lt;input id=&quot;cTitle&quot; required placeholder=&quot;Ex.: Outubro Rosa — Aluno Protagonista&quot;&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;cEmoji&quot;&gt;Emoji da campanha&lt;/label&gt;&lt;select id=&quot;cEmoji&quot;&gt;&lt;option value=&quot;🌷&quot;&gt;🌷 Flor&lt;/option&gt;&lt;option value=&quot;💗&quot;&gt;💗 Coração&lt;/option&gt;&lt;option value=&quot;🌎&quot;&gt;🌎 Meio ambiente&lt;/option&gt;&lt;option value=&quot;♻️&quot;&gt;♻️ Reciclagem&lt;/option&gt;&lt;option value=&quot;📚&quot;&gt;📚 Leitura e estudos&lt;/option&gt;&lt;option value=&quot;🎨&quot;&gt;🎨 Arte e criatividade&lt;/option&gt;&lt;option value=&quot;🤝&quot;&gt;🤝 União e respeito&lt;/option&gt;&lt;option value=&quot;🧠&quot;&gt;🧠 Saúde e bem-estar&lt;/option&gt;&lt;option value=&quot;🩷&quot;&gt;🩷 Outubro Rosa / cuidado&lt;/option&gt;&lt;option value=&quot;✨&quot;&gt;✨ Ideias e protagonismo&lt;/option&gt;&lt;option value=&quot;🎗️&quot;&gt;🎗️ Conscientização&lt;/option&gt;&lt;option value=&quot;🏆&quot;&gt;🏆 Desafio e conquista&lt;/option&gt;&lt;option value=&quot;🎉&quot;&gt;🎉 Evento e celebração&lt;/option&gt;&lt;option value=&quot;✏️&quot;&gt;✏️ Personalizado abaixo&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;cEmojiCustom&quot;&gt;Ou digite seu próprio emoji&lt;/label&gt;&lt;input id=&quot;cEmojiCustom&quot; maxlength=&quot;12&quot; placeholder=&quot;Ex.: 🦋 🌻 💙&quot;&gt;&lt;/div&gt;&lt;div class=&quot;field full&quot;&gt;&lt;label for=&quot;cDesc&quot;&gt;Apresentação e objetivo *&lt;/label&gt;&lt;textarea id=&quot;cDesc&quot; required placeholder=&quot;Explique a campanha, por que ela é importante e o que os alunos podem sugerir.&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;cStart&quot;&gt;Início das participações&lt;/label&gt;&lt;input id=&quot;cStart&quot; type=&quot;date&quot;&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;cEnd&quot;&gt;Encerramento&lt;/label&gt;&lt;input id=&quot;cEnd&quot; type=&quot;date&quot;&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;cAudience&quot;&gt;Público participante&lt;/label&gt;&lt;select id=&quot;cAudience&quot;&gt;&lt;option&gt;Toda a escola&lt;/option&gt;&lt;option&gt;Ensino Fundamental&lt;/option&gt;&lt;option&gt;Ensino Médio&lt;/option&gt;&lt;option&gt;Turmas específicas&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;cVote&quot;&gt;Votação&lt;/label&gt;&lt;select id=&quot;cVote&quot;&gt;&lt;option value=&quot;yes&quot;&gt;Ativada após aprovação das ideias&lt;/option&gt;&lt;option value=&quot;no&quot;&gt;Desativada&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;div class=&quot;field full&quot;&gt;&lt;label&gt;Personalizar as cores desta campanha&lt;/label&gt;&lt;div class=&quot;color-options&quot;&gt;&lt;label class=&quot;color-field&quot; for=&quot;cColorPrimary&quot;&gt;&lt;input id=&quot;cColorPrimary&quot; type=&quot;color&quot; value=&quot;#d96e9f&quot;&gt;&lt;span&gt;&lt;b&gt;Cor principal&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;smalltext&quot;&gt;Botões e destaques&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;&lt;label class=&quot;color-field&quot; for=&quot;cColorBg&quot;&gt;&lt;input id=&quot;cColorBg&quot; type=&quot;color&quot; value=&quot;#fff0f6&quot;&gt;&lt;span&gt;&lt;b&gt;Cor de fundo&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;smalltext&quot;&gt;Fundo da apresentação&lt;/span&gt;&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;&lt;div id=&quot;campaignColorPreview&quot; class=&quot;color-preview&quot; style=&quot;background:linear-gradient(120deg,#fff0f6,#f4f0ff);&quot;&gt;&lt;strong&gt;Prévia da campanha&lt;/strong&gt;&lt;span class=&quot;smalltext&quot;&gt;As cores escolhidas serão usadas na página dos alunos.&lt;/span&gt;&lt;div style=&quot;margin-top:10px&quot;&gt;&lt;span id=&quot;campaignColorSample&quot; class=&quot;btn small&quot; style=&quot;display:inline-block;background:#d96e9f&quot;&gt;Exemplo de botão&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field full&quot;&gt;&lt;label for=&quot;cRules&quot;&gt;Orientações para os alunos&lt;/label&gt;&lt;textarea id=&quot;cRules&quot; placeholder=&quot;Ex.: envie uma ideia respeitosa, viável e relacionada ao tema. A escola analisará as propostas antes de publicá-las.&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;&lt;div class=&quot;field full&quot;&gt;&lt;label for=&quot;cFile&quot;&gt;Importar arquivo de apoio (opcional)&lt;/label&gt;&lt;input id=&quot;cFile&quot; type=&quot;file&quot; accept=&quot;.csv,.txt,.json,.pdf,.png,.jpg,.jpeg&quot;&gt;&lt;span id=&quot;cFileStatus&quot; class=&quot;smalltext&quot;&gt;Nenhum arquivo selecionado.&lt;/span&gt;&lt;span class=&quot;smalltext&quot;&gt;O arquivo será disponibilizado aos alunos na página da campanha (máximo de 2 MB nesta versão). Imagens serão exibidas na página; outros arquivos poderão ser abertos ou baixados.&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;field full&quot;&gt;&lt;label for=&quot;cMaterialUrl&quot;&gt;Ou cole o link do Google Drive/Google Docs (opcional)&lt;/label&gt;&lt;input id=&quot;cMaterialUrl&quot; type=&quot;url&quot; placeholder=&quot;https://drive.google.com/... ou https://docs.google.com/...&quot;&gt;&lt;span class=&quot;smalltext&quot;&gt;Para alunos acessarem com qualquer e-mail: no Google Drive, abra Compartilhar → Acesso geral → Qualquer pessoa com o link → Leitor. Se continuar restrito, o Google poderá pedir autorização.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;button class=&quot;btn&quot; type=&quot;submit&quot;&gt;Criar campanha e gerar link →&lt;/button&gt;&lt;/form&gt;&lt;div id=&quot;newLink&quot; class=&quot;hidden&quot;&gt;&lt;hr&gt;&lt;h3&gt;Link da campanha criado&lt;/h3&gt;&lt;p class=&quot;muted&quot;&gt;Copie o link e compartilhe com os alunos. O link do Google pode ser aberto por usuários com qualquer e-mail se o próprio arquivo estiver configurado como “Qualquer pessoa com o link”. Os dados da campanha ainda ficam neste navegador/dispositivo.&lt;/p&gt;&lt;div class=&quot;linkbox&quot;&gt;&lt;input id=&quot;linkOutput&quot; readonly&gt;&lt;button class=&quot;btn&quot; onclick=&quot;copyLink()&quot;&gt;Copiar link&lt;/button&gt;&lt;button class=&quot;btn secondary&quot; onclick=&quot;openLink()&quot;&gt;Abrir página&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;
+  &lt;section id=&quot;tab-manage&quot; class=&quot;adminTab hidden&quot;&gt;&lt;div class=&quot;panel&quot;&gt;&lt;div class=&quot;sectionhead&quot;&gt;&lt;h2&gt;Minhas campanhas&lt;/h2&gt;&lt;span class=&quot;smalltext&quot;&gt;Cada campanha tem link próprio&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;allCampaigns&quot; class=&quot;campaignlist&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;
+  &lt;section id=&quot;tab-moderate&quot; class=&quot;adminTab hidden&quot;&gt;&lt;div class=&quot;panel&quot;&gt;&lt;div class=&quot;sectionhead&quot;&gt;&lt;h2&gt;Revisão de ideias&lt;/h2&gt;&lt;span class=&quot;tag orange&quot;&gt;Antes de publicar&lt;/span&gt;&lt;/div&gt;&lt;p class=&quot;muted&quot;&gt;As propostas ficam privadas até a escola aprová-las. Por isso, uma ideia enviada não aparece imediatamente no mural público: entre em “Moderar ideias” e clique em “Aprovar e publicar”. Revise conteúdo e dados pessoais antes de liberar.&lt;/p&gt;&lt;div id=&quot;moderationList&quot; class=&quot;ideas&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;
+ &lt;/main&gt;&lt;/div&gt;
+&lt;/section&gt;
+&lt;section id=&quot;public&quot; class=&quot;hidden&quot;&gt;
+ &lt;div class=&quot;publichead&quot;&gt;&lt;span class=&quot;smalltext&quot;&gt;Página de participação dos alunos&lt;/span&gt;&lt;/div&gt;
+ &lt;div id=&quot;publicCampaign&quot;&gt;&lt;/div&gt;
+ &lt;div class=&quot;cards&quot; style=&quot;margin-top:18px&quot;&gt;
+  &lt;div class=&quot;panel&quot;&gt;&lt;h2&gt;💡 Compartilhe sua ideia&lt;/h2&gt;&lt;p class=&quot;muted&quot;&gt;Conte sua proposta com clareza. Ela só aparecerá no blog depois da revisão da escola.&lt;/p&gt;&lt;form id=&quot;ideaForm&quot;&gt;&lt;input id=&quot;ideaCampaignId&quot; type=&quot;hidden&quot;&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;ideaName&quot;&gt;Como podemos chamar você? *&lt;/label&gt;&lt;input id=&quot;ideaName&quot; required maxlength=&quot;60&quot; placeholder=&quot;Nome ou apelido autorizado pela escola&quot;&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;ideaClass&quot;&gt;Sala / turma *&lt;/label&gt;&lt;input id=&quot;ideaClass&quot; required maxlength=&quot;40&quot; placeholder=&quot;Ex.: 8º A, 2º B ou Sala 12&quot;&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;ideaTitle&quot;&gt;Título da ideia *&lt;/label&gt;&lt;input id=&quot;ideaTitle&quot; required maxlength=&quot;100&quot; placeholder=&quot;Ex.: Mural de mensagens de apoio&quot;&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;ideaBody&quot;&gt;Explique sua proposta *&lt;/label&gt;&lt;textarea id=&quot;ideaBody&quot; required maxlength=&quot;1500&quot; placeholder=&quot;O que você sugere? Como poderia funcionar?&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;&lt;div class=&quot;field&quot;&gt;&lt;label for=&quot;ideaImage&quot;&gt;Imagem da campanha (opcional)&lt;/label&gt;&lt;input id=&quot;ideaImage&quot; type=&quot;file&quot; accept=&quot;image/png,image/jpeg,image/webp,image/gif&quot;&gt;&lt;span class=&quot;smalltext&quot;&gt;Envie um cartaz ou imagem da sua campanha (PNG, JPG ou WEBP; até 5 MB). A imagem será reduzida para facilitar o envio. Não envie fotos de alunos sem autorização.&lt;/span&gt;&lt;/div&gt;&lt;button class=&quot;btn&quot; type=&quot;submit&quot;&gt;Enviar para análise →&lt;/button&gt;&lt;p class=&quot;smalltext&quot;&gt;Não inclua telefone, endereço, informações íntimas ou dados de outras pessoas.&lt;/p&gt;&lt;/form&gt;&lt;div id=&quot;ideaSuccess&quot; class=&quot;notice info hidden&quot;&gt;Sua ideia foi enviada para análise da escola. Obrigado por participar! 🌷&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;panel&quot;&gt;&lt;div class=&quot;sectionhead&quot;&gt;&lt;h2&gt;🗳️ Ideias da comunidade&lt;/h2&gt;&lt;span class=&quot;tag green&quot;&gt;Aprovadas&lt;/span&gt;&lt;/div&gt;&lt;p class=&quot;muted&quot;&gt;Leia as propostas e vote naquelas que você gostaria de apoiar.&lt;/p&gt;&lt;div id=&quot;publicIdeas&quot; class=&quot;ideas&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class=&quot;notice info&quot;&gt;A votação é consultiva: as ideias mais votadas serão levadas à análise da equipe escolar e, quando necessário, da secretaria responsável. A votação não garante que a proposta será executada.&lt;/div&gt;
+&lt;/section&gt;
+&lt;/div&gt;
+&lt;script&gt;
+const STORE=&#x27;vivaAlunoProtagonista_v1&#x27;;
+let data=loadData(), currentCampaign=null, lastLink=&#x27;&#x27;;
+function loadData(){try{return JSON.parse(localStorage.getItem(STORE))||{campaigns:[],ideas:[],votes:[]}}catch(e){return{campaigns:[],ideas:[],votes:[]}}}
+function save(){localStorage.setItem(STORE,JSON.stringify(data));refresh()}
+function id(){return &#x27;camp-&#x27;+Date.now().toString(36)+&#x27;-&#x27;+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s??&#x27;&#x27;).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g,c=&gt;({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[c]))}
+function fmt(d){if(!d)return &#x27;&#x27;;try{return new Date(d+&#x27;T12:00:00&#x27;).toLocaleDateString(&#x27;pt-BR&#x27;)}catch(e){return d}}
+function showOnly(which){[&#x27;home&#x27;,&#x27;admin&#x27;,&#x27;public&#x27;].forEach(x=&gt;document.getElementById(x).classList.toggle(&#x27;hidden&#x27;,x!==which));document.getElementById(&#x27;homeBtn&#x27;).classList.toggle(&#x27;hidden&#x27;,which!==&#x27;admin&#x27;)}
+function goHome(){history.pushState({},&#x27;&#x27;,location.pathname+location.search);showOnly(&#x27;home&#x27;);refresh()}
+function showAdmin(){
+ adminUnlocked=true;history.pushState({},&#x27;&#x27;,location.pathname+location.search+&#x27;#escola&#x27;);showOnly(&#x27;admin&#x27;);tab(&#x27;overview&#x27;);refresh()
+}
+function tab(name,btn){document.querySelectorAll(&#x27;.adminTab&#x27;).forEach(x=&gt;x.classList.add(&#x27;hidden&#x27;));document.getElementById(&#x27;tab-&#x27;+name).classList.remove(&#x27;hidden&#x27;);document.querySelectorAll(&#x27;.nav&#x27;).forEach(x=&gt;x.classList.toggle(&#x27;active&#x27;,x.dataset.tab===name));if(btn)btn.classList.add(&#x27;active&#x27;);if(name===&#x27;moderate&#x27;)renderModeration()}
+function linkFor(c){return location.href.split(&#x27;#&#x27;)[0]+&#x27;#campanha=&#x27;+encodeURIComponent(c.id)}
+function createCard(c,admin=false){let count=data.ideas.filter(i=&gt;i.campaignId===c.id).length;let status=c.active===false?&#x27;Arquivada&#x27;:&#x27;Ativa&#x27;;return `&lt;article class=&quot;campaign&quot; style=&quot;border-top:4px solid ${esc(c.colorPrimary||&#x27;#d96e9f&#x27;)}&quot;&gt;&lt;div class=&quot;campaign-top&quot;&gt;&lt;span class=&quot;tag ${c.active===false?&#x27;orange&#x27;:&#x27;green&#x27;}&quot;&gt;${status}&lt;/span&gt;&lt;span class=&quot;smalltext&quot;&gt;${esc(c.audience||&#x27;Toda a escola&#x27;)}&lt;/span&gt;&lt;/div&gt;&lt;h3&gt;${esc(c.emoji||&#x27;🌷&#x27;)} ${esc(c.title)}&lt;/h3&gt;&lt;p&gt;${esc(c.desc)}&lt;/p&gt;&lt;div class=&quot;smalltext&quot;&gt;${c.start?&#x27;Início: &#x27;+fmt(c.start)+&#x27; · &#x27;:&#x27;&#x27;}${c.end?&#x27;Fim: &#x27;+fmt(c.end)+&#x27; · &#x27;:&#x27;&#x27;}${count} ideia(s)&lt;/div&gt;${admin?`&lt;div class=&quot;btnrow&quot;&gt;&lt;button class=&quot;btn small&quot; onclick=&quot;showCampaign(&#x27;${c.id}&#x27;)&quot;&gt;Abrir página&lt;/button&gt;&lt;button class=&quot;btn secondary small&quot; onclick=&quot;copyCampaign(&#x27;${c.id}&#x27;)&quot;&gt;Copiar link&lt;/button&gt;&lt;button class=&quot;btn secondary small&quot; onclick=&quot;toggleCampaign(&#x27;${c.id}&#x27;)&quot;&gt;${c.active===false?&#x27;Reativar&#x27;:&#x27;Arquivar&#x27;}&lt;/button&gt;&lt;/div&gt;`:`&lt;div class=&quot;btnrow&quot;&gt;&lt;button class=&quot;btn small&quot; onclick=&quot;showCampaign(&#x27;${c.id}&#x27;)&quot;&gt;Participar →&lt;/button&gt;&lt;/div&gt;`}&lt;/article&gt;`}
+function refresh(){let active=data.campaigns.filter(c=&gt;c.active!==false);document.getElementById(&#x27;statCampaigns&#x27;).textContent=data.campaigns.length;document.getElementById(&#x27;statIdeas&#x27;).textContent=data.ideas.length;document.getElementById(&#x27;statPending&#x27;).textContent=data.ideas.filter(i=&gt;i.status===&#x27;pending&#x27;).length;document.getElementById(&#x27;recentCampaigns&#x27;).innerHTML=active.length?active.slice(-3).reverse().map(c=&gt;createCard(c,true)).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;empty&quot;&gt;Ainda não há campanhas. Crie a primeira!&lt;/div&gt;&#x27;;document.getElementById(&#x27;allCampaigns&#x27;).innerHTML=data.campaigns.length?data.campaigns.slice().reverse().map(c=&gt;createCard(c,true)).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;empty&quot;&gt;Nenhuma campanha criada.&lt;/div&gt;&#x27;;renderModeration()}
+document.getElementById(&#x27;createForm&#x27;).addEventListener(&#x27;submit&#x27;,async e=&gt;{e.preventDefault();const form=e.target;const submitBtn=form.querySelector(&#x27;button[type=&quot;submit&quot;]&#x27;);const file=document.getElementById(&#x27;cFile&#x27;).files[0];const materialUrl=document.getElementById(&#x27;cMaterialUrl&#x27;).value.trim();if(materialUrl&amp;&amp;!/^https:\/\//i.test(materialUrl)){alert(&#x27;Use um link HTTPS do Google Drive ou Google Docs.&#x27;);return;}if(file&amp;&amp;file.size&gt;2*1024*1024){alert(&#x27;O arquivo de apoio deve ter no máximo 2 MB para caber no armazenamento deste protótipo.&#x27;);return;}submitBtn.disabled=true;submitBtn.textContent=&#x27;Criando campanha...&#x27;;try{let fileData=&#x27;&#x27;;if(file)fileData=await new Promise((resolve,reject)=&gt;{const reader=new FileReader();reader.onload=()=&gt;resolve(String(reader.result));reader.onerror=()=&gt;reject(new Error(&#x27;Falha ao ler arquivo&#x27;));reader.readAsDataURL(file)});let c={id:id(),title:document.getElementById(&#x27;cTitle&#x27;).value.trim(),emoji:(document.getElementById(&#x27;cEmojiCustom&#x27;).value.trim()||document.getElementById(&#x27;cEmoji&#x27;).value||&#x27;🌷&#x27;),desc:document.getElementById(&#x27;cDesc&#x27;).value.trim(),start:document.getElementById(&#x27;cStart&#x27;).value,end:document.getElementById(&#x27;cEnd&#x27;).value,audience:document.getElementById(&#x27;cAudience&#x27;).value,voting:document.getElementById(&#x27;cVote&#x27;).value===&#x27;yes&#x27;,rules:document.getElementById(&#x27;cRules&#x27;).value.trim(),materialUrl:document.getElementById(&#x27;cMaterialUrl&#x27;).value.trim(),colorPrimary:document.getElementById(&#x27;cColorPrimary&#x27;).value,colorBg:document.getElementById(&#x27;cColorBg&#x27;).value,fileName:file?file.name:&#x27;&#x27;,fileData,fileType:file?file.type:&#x27;&#x27;,created:new Date().toISOString(),active:true};data.campaigns.push(c);try{save()}catch(storageErr){data.campaigns=data.campaigns.filter(x=&gt;x.id!==c.id);alert(&#x27;Não foi possível salvar. Tente um arquivo menor (até 2 MB) ou crie a campanha sem arquivo.&#x27;);return;}lastLink=linkFor(c);document.getElementById(&#x27;linkOutput&#x27;).value=lastLink;document.getElementById(&#x27;newLink&#x27;).classList.remove(&#x27;hidden&#x27;);form.reset();updateCampaignColorPreview();}catch(err){alert(&#x27;Não foi possível ler o arquivo de apoio. Tente outro arquivo.&#x27;)}finally{submitBtn.disabled=false;submitBtn.textContent=&#x27;Criar campanha e gerar link →&#x27;;}});
+function copyLink(){let el=document.getElementById(&#x27;linkOutput&#x27;);el.select();el.setSelectionRange(0,99999);if(navigator.clipboard&amp;&amp;navigator.clipboard.writeText)navigator.clipboard.writeText(el.value).then(()=&gt;alert(&#x27;Link copiado!&#x27;)).catch(()=&gt;alert(&#x27;Selecione e copie o link manualmente.&#x27;));else alert(&#x27;Link selecionado. Copie usando o menu do dispositivo.&#x27;)}
+function openLink(){let c=data.campaigns.find(x=&gt;linkFor(x)===lastLink)||data.campaigns[data.campaigns.length-1];if(c)showCampaign(c.id)}
+function copyCampaign(cid){lastLink=linkFor(data.campaigns.find(c=&gt;c.id===cid));if(navigator.clipboard&amp;&amp;navigator.clipboard.writeText)navigator.clipboard.writeText(lastLink).then(()=&gt;alert(&#x27;Link copiado!&#x27;)).catch(()=&gt;prompt(&#x27;Copie o link:&#x27;,lastLink));else prompt(&#x27;Copie o link:&#x27;,lastLink)}
+function toggleCampaign(cid){let c=data.campaigns.find(c=&gt;c.id===cid);if(c){c.active=c.active===false;save()}}
+function showCampaign(cid){let c=data.campaigns.find(c=&gt;c.id===cid);if(!c){alert(&#x27;Campanha não encontrada neste navegador.&#x27;);return}currentCampaign=c;document.getElementById(&#x27;public&#x27;).style.setProperty(&#x27;--campaign-primary&#x27;,c.colorPrimary||&#x27;#d96e9f&#x27;);document.getElementById(&#x27;public&#x27;).style.setProperty(&#x27;--campaign-bg&#x27;,c.colorBg||&#x27;#fff0f6&#x27;);history.pushState({},&#x27;&#x27;,location.pathname+location.search+&#x27;#campanha=&#x27;+encodeURIComponent(cid));showOnly(&#x27;public&#x27;);document.getElementById(&#x27;ideaCampaignId&#x27;).value=cid;document.getElementById(&#x27;ideaSuccess&#x27;).classList.add(&#x27;hidden&#x27;);document.getElementById(&#x27;publicCampaign&#x27;).innerHTML=`&lt;div class=&quot;hero&quot; style=&quot;background:linear-gradient(120deg,${esc(c.colorBg||&#x27;#fff0f6&#x27;)},#f4f0ff 65%,#effaf4);border-top:5px solid ${esc(c.colorPrimary||&#x27;#d96e9f&#x27;)}&quot;&gt;&lt;span class=&quot;eyebrow&quot; style=&quot;color:${esc(c.colorPrimary||&#x27;#ba5d8a&#x27;)}&quot;&gt;Escola Estadual Heloíza Therezinha Murbach Lacava · Aluno protagonista&lt;/span&gt;&lt;h1 class=&quot;publictitle&quot;&gt;${esc(c.emoji||&#x27;🌷&#x27;)} ${esc(c.title)}&lt;/h1&gt;&lt;p&gt;${esc(c.desc)}&lt;/p&gt;&lt;div class=&quot;btnrow&quot;&gt;&lt;span class=&quot;pill&quot;&gt;👥 ${esc(c.audience||&#x27;Toda a escola&#x27;)}&lt;/span&gt;${c.end?`&lt;span class=&quot;pill&quot;&gt;📅 Até ${fmt(c.end)}&lt;/span&gt;`:&#x27;&#x27;}&lt;/div&gt;&lt;/div&gt;${c.rules?`&lt;div class=&quot;notice info&quot;&gt;&lt;b&gt;Orientações:&lt;/b&gt; ${esc(c.rules)}&lt;/div&gt;`:&#x27;&#x27;}&lt;div class=&quot;smalltext&quot;&gt;${c.voting?&#x27;A votação está disponível para as ideias aprovadas.&#x27;:&#x27;A votação está desativada nesta campanha.&#x27;} ${c.fileName?&#x27;Arquivo de apoio: &#x27;+esc(c.fileName):&#x27;&#x27;}&lt;/div&gt;${(c.fileData||c.fileName||c.materialUrl)?`&lt;div class=&quot;panel&quot; style=&quot;margin-top:14px&quot;&gt;&lt;h2&gt;📎 Material de apoio da escola&lt;/h2&gt;&lt;p class=&quot;muted&quot;&gt;${esc(c.fileName||&#x27;Arquivo de apoio&#x27;)}&lt;/p&gt;${!c.fileData?`&lt;div class=&quot;notice&quot;&gt;O nome foi salvo, mas o conteúdo do arquivo não está nesta campanha. Anexe o material novamente pelo painel administrativo.&lt;/div&gt;`:&#x27;&#x27;}${c.fileData&amp;&amp;(c.fileType||&#x27;&#x27;).startsWith(&#x27;image/&#x27;)?`&lt;img src=&quot;${c.fileData}&quot; alt=&quot;Material de apoio da campanha&quot; style=&quot;display:block;width:100%;max-width:760px;max-height:520px;object-fit:contain;object-position:left;border-radius:12px;margin:10px 0&quot;&gt;`:&#x27;&#x27;}${c.fileData&amp;&amp;(c.fileType||&#x27;&#x27;).includes(&#x27;pdf&#x27;)?`&lt;iframe title=&quot;Visualização do PDF de apoio&quot; src=&quot;${c.fileData}&quot; style=&quot;width:100%;height:600px;border:1px solid var(--line);border-radius:12px;margin:10px 0&quot;&gt;&lt;/iframe&gt;`:&#x27;&#x27;}${c.fileData?`&lt;div class=&quot;btnrow&quot;&gt;&lt;a class=&quot;btn&quot; href=&quot;${c.fileData}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; style=&quot;text-decoration:none;display:inline-block&quot;&gt;Abrir arquivo ↗&lt;/a&gt;&lt;a class=&quot;btn secondary&quot; href=&quot;${c.fileData}&quot; download=&quot;${esc(c.fileName||&#x27;material-de-apoio&#x27;)}&quot; style=&quot;text-decoration:none;display:inline-block&quot;&gt;Baixar arquivo ↓&lt;/a&gt;&lt;/div&gt;`:&#x27;&#x27;}${c.materialUrl?`&lt;div class=&quot;btnrow&quot;&gt;&lt;a class=&quot;btn&quot; href=&quot;${esc(c.materialUrl)}&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; style=&quot;text-decoration:none;display:inline-block&quot;&gt;Abrir material no Google ↗&lt;/a&gt;&lt;/div&gt;&lt;p class=&quot;smalltext&quot;&gt;Se o Google pedir acesso, altere o compartilhamento do arquivo para “Qualquer pessoa com o link — Leitor”.&lt;/p&gt;`:&#x27;&#x27;}&lt;/div&gt;`:&#x27;&#x27;}`;renderPublicIdeas()}
+async function imageToCompactDataUrl(file){return new Promise((resolve,reject)=&gt;{const reader=new FileReader();reader.onerror=()=&gt;reject(new Error(&#x27;Não foi possível ler a imagem.&#x27;));reader.onload=()=&gt;{const img=new Image();img.onerror=()=&gt;reject(new Error(&#x27;Formato de imagem inválido.&#x27;));img.onload=()=&gt;{const maxSide=1200;const scale=Math.min(1,maxSide/Math.max(img.width,img.height));const canvas=document.createElement(&#x27;canvas&#x27;);canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));const ctx=canvas.getContext(&#x27;2d&#x27;);ctx.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL(&#x27;image/jpeg&#x27;,0.72));};img.src=String(reader.result);};reader.readAsDataURL(file);});}
+document.getElementById(&#x27;ideaForm&#x27;).addEventListener(&#x27;submit&#x27;,async e=&gt;{e.preventDefault();let cid=document.getElementById(&#x27;ideaCampaignId&#x27;).value;let c=data.campaigns.find(c=&gt;c.id===cid);if(!c){alert(&#x27;Campanha não encontrada. Abra novamente o link da campanha.&#x27;);return;}const submitBtn=e.target.querySelector(&#x27;button[type=&quot;submit&quot;]&#x27;);submitBtn.disabled=true;submitBtn.textContent=&#x27;Enviando...&#x27;;try{const imageFile=document.getElementById(&#x27;ideaImage&#x27;).files[0];if(imageFile&amp;&amp;imageFile.size&gt;5*1024*1024){alert(&#x27;A imagem original deve ter no máximo 5 MB.&#x27;);return;}let image=&#x27;&#x27;;if(imageFile)image=await imageToCompactDataUrl(imageFile);const idea={id:id(),campaignId:cid,name:document.getElementById(&#x27;ideaName&#x27;).value.trim(),classroom:document.getElementById(&#x27;ideaClass&#x27;).value.trim(),title:document.getElementById(&#x27;ideaTitle&#x27;).value.trim(),body:document.getElementById(&#x27;ideaBody&#x27;).value.trim(),image,status:&#x27;pending&#x27;,created:new Date().toISOString()};data.ideas.push(idea);try{save();}catch(storageErr){data.ideas=data.ideas.filter(i=&gt;i.id!==idea.id);alert(&#x27;O navegador ficou sem espaço para salvar esta ideia. Tente uma imagem menor ou sem imagem.&#x27;);return;}e.target.reset();document.getElementById(&#x27;ideaSuccess&#x27;).textContent=&#x27;Sua ideia foi enviada e salva! Ela aparecerá no mural para todos depois que a escola aprovar. Você pode acompanhar com a equipe escolar.&#x27;;document.getElementById(&#x27;ideaSuccess&#x27;).classList.remove(&#x27;hidden&#x27;);document.getElementById(&#x27;ideaCampaignId&#x27;).value=cid;}catch(err){alert(&#x27;Não foi possível enviar a ideia. Tente outra imagem ou envie sem imagem.&#x27;);}finally{submitBtn.disabled=false;submitBtn.textContent=&#x27;Enviar para análise →&#x27;;}});
+function renderPublicIdeas(){if(!currentCampaign)return;let ideas=data.ideas.filter(i=&gt;i.campaignId===currentCampaign.id&amp;&amp;i.status===&#x27;approved&#x27;);document.getElementById(&#x27;publicIdeas&#x27;).innerHTML=ideas.length?ideas.sort((a,b)=&gt;voteCount(b.id)-voteCount(a.id)).map(i=&gt;`&lt;article class=&quot;idea&quot;&gt;&lt;div class=&quot;idea-top&quot;&gt;&lt;div&gt;&lt;h3&gt;${esc(i.emoji||&#x27;💡&#x27;)} ${esc(i.title)}&lt;/h3&gt;&lt;div class=&quot;smalltext&quot;&gt;Por ${esc(i.name)} · Sala/turma: ${esc(i.classroom||&#x27;Não informada&#x27;)}&lt;/div&gt;&lt;/div&gt;&lt;span class=&quot;tag green&quot;&gt;Publicada&lt;/span&gt;&lt;/div&gt;&lt;p&gt;${esc(i.body)}&lt;/p&gt;${i.image?`&lt;img src=&quot;${i.image}&quot; alt=&quot;Imagem da campanha enviada por ${esc(i.name)}&quot; style=&quot;display:block;max-width:100%;max-height:420px;object-fit:contain;border-radius:12px;margin-top:10px;border:1px solid var(--line)&quot;&gt;`:&#x27;&#x27;}&lt;div class=&quot;idea-footer&quot;&gt;&lt;span class=&quot;smalltext&quot;&gt;${voteCount(i.id)} voto(s)&lt;/span&gt;${currentCampaign.voting?`&lt;div class=&quot;vote&quot;&gt;&lt;button class=&quot;${hasVoted(i.id)?&#x27;voted&#x27;:&#x27;&#x27;}&quot; onclick=&quot;vote(&#x27;${i.id}&#x27;)&quot;&gt;${hasVoted(i.id)?&#x27;✓ Votou&#x27;:&#x27;♡ Votar&#x27;}&lt;/button&gt;&lt;/div&gt;`:&#x27;&lt;span class=&quot;smalltext&quot;&gt;Votação encerrada/desativada&lt;/span&gt;&#x27;}&lt;/div&gt;&lt;/article&gt;`).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;empty&quot;&gt;As ideias aprovadas aparecerão aqui. Seja a primeira pessoa a enviar uma proposta! 💗&lt;/div&gt;&#x27;}
+function voteCount(iid){return data.votes.filter(v=&gt;v.ideaId===iid).length}
+function hasVoted(iid){return data.votes.some(v=&gt;v.ideaId===iid&amp;&amp;v.voter===visitorKey())}
+function visitorKey(){let k=&#x27;vivaVisitorKey&#x27;;let v=sessionStorage.getItem(k);if(!v){v=&#x27;visitor-&#x27;+Math.random().toString(36).slice(2);sessionStorage.setItem(k,v)}return v}
+function vote(iid){if(hasVoted(iid)){alert(&#x27;Neste navegador, você já votou nesta ideia.&#x27;);return}data.votes.push({ideaId:iid,voter:visitorKey(),created:new Date().toISOString()});save();renderPublicIdeas()}
+function renderModeration(){let pending=data.ideas.filter(i=&gt;i.status===&#x27;pending&#x27;);document.getElementById(&#x27;moderationList&#x27;).innerHTML=pending.length?pending.map(i=&gt;{let c=data.campaigns.find(c=&gt;c.id===i.campaignId);return `&lt;article class=&quot;idea&quot;&gt;&lt;div class=&quot;idea-top&quot;&gt;&lt;div&gt;&lt;span class=&quot;tag orange&quot;&gt;Aguardando revisão&lt;/span&gt;&lt;h3&gt;${esc(i.emoji||&#x27;💡&#x27;)} ${esc(i.title)}&lt;/h3&gt;&lt;div class=&quot;smalltext&quot;&gt;Por ${esc(i.name)} · Sala/turma: ${esc(i.classroom||&#x27;Não informada&#x27;)} · Campanha: ${esc(c?c.title:&#x27;não encontrada&#x27;)}&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;${esc(i.body)}&lt;/p&gt;${i.image?`&lt;img src=&quot;${i.image}&quot; alt=&quot;Imagem enviada com a ideia&quot; style=&quot;display:block;max-width:100%;max-height:360px;object-fit:contain;border-radius:12px;margin-top:10px;border:1px solid var(--line)&quot;&gt;`:&#x27;&#x27;}&lt;div class=&quot;btnrow&quot;&gt;&lt;button class=&quot;btn small&quot; onclick=&quot;moderate(&#x27;${i.id}&#x27;,&#x27;approved&#x27;)&quot;&gt;✓ Aprovar e publicar&lt;/button&gt;&lt;button class=&quot;btn danger small&quot; onclick=&quot;moderate(&#x27;${i.id}&#x27;,&#x27;rejected&#x27;)&quot;&gt;Recusar&lt;/button&gt;&lt;/div&gt;&lt;/article&gt;`}).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;empty&quot;&gt;Tudo em dia! Não há ideias aguardando revisão.&lt;/div&gt;&#x27;;let all=data.ideas.filter(i=&gt;i.status!==&#x27;pending&#x27;);if(all.length)document.getElementById(&#x27;moderationList&#x27;).innerHTML+=`&lt;hr&gt;&lt;h3&gt;Decisões anteriores&lt;/h3&gt;`+all.slice().reverse().map(i=&gt;`&lt;article class=&quot;idea&quot;&gt;&lt;div class=&quot;idea-top&quot;&gt;&lt;h3&gt;${esc(i.title)}&lt;/h3&gt;&lt;span class=&quot;tag ${i.status===&#x27;approved&#x27;?&#x27;green&#x27;:&#x27;orange&#x27;}&quot;&gt;${i.status===&#x27;approved&#x27;?&#x27;Aprovada&#x27;:&#x27;Recusada&#x27;}&lt;/span&gt;&lt;/div&gt;&lt;p&gt;${esc(i.body)}&lt;/p&gt;${i.status===&#x27;rejected&#x27;?`&lt;button class=&quot;btn secondary small&quot; onclick=&quot;moderate(&#x27;${i.id}&#x27;,&#x27;pending&#x27;)&quot;&gt;Voltar para revisão&lt;/button&gt;`:&#x27;&#x27;}&lt;/article&gt;`).join(&#x27;&#x27;)}
+function moderate(iid,status){let i=data.ideas.find(i=&gt;i.id===iid);if(i){i.status=status;save();renderModeration();if(currentCampaign)renderPublicIdeas()}}
+window.addEventListener(&#x27;hashchange&#x27;,route);window.addEventListener(&#x27;popstate&#x27;,route);
+let adminUnlocked=false;
+function route(){let h=decodeURIComponent(location.hash.slice(1));if(h.startsWith(&#x27;campanha=&#x27;)){showCampaign(h.slice(9))}else if(h===&#x27;escola&#x27;){adminUnlocked=true;showOnly(&#x27;admin&#x27;);refresh()}else{showOnly(&#x27;home&#x27;);refresh()}}
+function updateCampaignColorPreview(){const primary=document.getElementById(&#x27;cColorPrimary&#x27;);const bg=document.getElementById(&#x27;cColorBg&#x27;);const preview=document.getElementById(&#x27;campaignColorPreview&#x27;);const sample=document.getElementById(&#x27;campaignColorSample&#x27;);if(primary&amp;&amp;bg&amp;&amp;preview&amp;&amp;sample){sample.style.background=primary.value;preview.style.background=`linear-gradient(120deg,${bg.value},#f4f0ff 65%,#effaf4)`;preview.style.borderTop=&#x27;4px solid &#x27;+primary.value;}}
+document.getElementById(&#x27;cFile&#x27;).addEventListener(&#x27;change&#x27;,()=&gt;{const f=document.getElementById(&#x27;cFile&#x27;).files[0];document.getElementById(&#x27;cFileStatus&#x27;).textContent=f?&#x27;Arquivo selecionado: &#x27;+f.name+&#x27; (&#x27;+Math.ceil(f.size/1024)+&#x27; KB)&#x27;:&#x27;Nenhum arquivo selecionado.&#x27;;});document.getElementById(&#x27;cColorPrimary&#x27;).addEventListener(&#x27;input&#x27;,updateCampaignColorPreview);document.getElementById(&#x27;cColorBg&#x27;).addEventListener(&#x27;input&#x27;,updateCampaignColorPreview);
+refresh();route();updateCampaignColorPreview();
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;"></iframe></div>
+</section>
+
+<!-- ===== SEÇÃO 9: CONCLUSÃO ===== -->
+<section id="conclusao">
+  <h2 class="st">🌷 Conclusão</h2>
+  <div class="card bg-pink"><p style="color:var(--ink)">O projeto busca fortalecer a comunicação entre escola e famílias, aumentar a participação da comunidade e melhorar o planejamento das atividades. É possível começar com ações de baixo custo e recursos que a escola já possui (WhatsApp, Instagram, painel mensal, Grêmio), acompanhando os resultados para orientar ajustes ao longo do tempo.</p></div>
+</section>
+<footer>Projeto de Extensão III · Administração · Escola Estadual Heloiza Therezinha Murbach Lacava</footer>
+</main>
+
+<script>
+/* ===== DADOS: SWOT ===== */
+const swot=[
+ {t:'💪 Forças',c:'bg-mint',i:[['Comprometimento e colaboração da gestão, professores e funcionários','Alta'],['Protagonismo estudantil e atuação do Grêmio Estudantil','Alta'],['Diferentes canais de comunicação (WhatsApp, Instagram, impressos)','Média'],['Painel mensal de atividades','Média'],['Registros de presença, fotografias e observações qualitativas','Baixa']]},
+ {t:'🩹 Fraquezas',c:'bg-pink',i:[['Dificuldade de garantir a leitura dos comunicados pelos responsáveis'],['Baixo envolvimento de parte das famílias'],['Necessidade de melhorar planejamento e divulgação antecipada'],['Ausência de sistema institucional com confirmação de leitura'],['Disponibilidade limitada dos profissionais para conciliar tarefas']]},
+ {t:'🌱 Oportunidades',c:'bg-blue',i:[['Uso de ferramentas digitais na comunicação'],['Parcerias com comércio local, universidades e instituições sociais'],['Eventos culturais, esportivos e campanhas solidárias'],['Reuniões em horários mais acessíveis'],['Maior participação do Grêmio Estudantil']]},
+ {t:'⛈️ Ameaças',c:'bg-yellow',i:[['Escassez de verbas e burocracia nos repasses públicos','Alta'],['Jornadas de trabalho e dificuldades de acesso digital das famílias','Alta'],['Mudanças curriculares e exigências burocráticas','Média'],['Calendário escolar rígido em conflito com a rotina da comunidade','Média'],['Infraestrutura urbana no entorno, algoritmos das redes sociais e alta de preços','Baixa']]}
+];
+const tg={Alta:'r',Média:'o',Baixa:'b'};
+document.getElementById('swotGrid').innerHTML=swot.map(s=>`<article class="card ${s.c}"><h3>${s.t}</h3><ul>${s.i.map(x=>`<li>${x[0]}${x[1]?` <span class="tag ${tg[x[1]]}">${x[1]}</span>`:''}</li>`).join('')}</ul></article>`).join('');
+
+/* ===== DADOS: KPIs ===== */
+const kpis=[
+ {n:'1. Taxa de confirmação de leitura dos comunicados',o:'Medir a % de comunicados físicos e digitais confirmados pelo destinatário.',m:'> 90%',f:'Diário (acompanhamento) · Mensal (avaliação)',a:['Padronizar a linguagem','Mecanismos de confirmação (formulários, enquetes, assinaturas)','Monitorar pendências','Facilitar o esclarecimento de dúvidas'],c:['Percentual de leitura confirmada','Confirmação por canal','Pendências','Tempo e taxa de resolução de dúvidas'],fx:'(comunicados com leitura confirmada ÷ comunicados enviados) × 100',ob:'A confirmação de leitura não garante, por si só, a compreensão do comunicado. Por isso os canais de dúvidas são importantes.'},
+ {n:'2. Participação e engajamento da comunidade',o:'Medir presença, frequência e envolvimento dos responsáveis em eventos, reuniões e atividades.',m:'+80% vs. eventos anteriores',f:'Trimestral · comparação ano a ano',a:['Divulgação antecipada','Horários acessíveis','Registro de presença','Atividades interativas, palestras e oficinas','Pesquisas de satisfação'],c:['Taxa de presença em reuniões','Frequência durante o ano letivo','Satisfação com os eventos','Participação efetiva em projetos'],fx:'((participantes atuais − participantes de referência) ÷ participantes de referência) × 100',ob:'É preciso definir a quantidade de referência (qual evento anterior ou média) para avaliar o aumento de 80%.'},
+ {n:'3. Protagonismo e ações lideradas por estudantes (IPAE)',o:'Medir a proporção de ações lideradas por estudantes e pelo Grêmio.',m:'+50% na participação protagonista',f:'Trimestral, conforme campanhas e período letivo',a:['Incentivar ideias dos estudantes','Envolver o Grêmio','Definir calendário, responsáveis e recursos'],c:['% de participação dos estudantes nas campanhas','Crescimento comparativo entre campanhas','Pesquisa de satisfação sobre autonomia'],fx:'(ações lideradas por estudantes ÷ total de ações do período) × 100',ob:'O KPI não garante autonomia, mas cria um ambiente favorável para identificar melhorias.'},
+ {n:'4. Aderência ao cronograma do painel mensal',o:'Verificar quanto do que está no painel mensal é realizado nas datas e condições previstas.',m:'≥ 95%',f:'Durante o ano letivo, alinhado ao calendário escolar',a:['Atualizar o calendário','Divulgar antecipadamente','Monitorar atrasos','Reorganizar atividades diante de imprevistos'],c:['Taxa de aderência','Divulgação antecipada de eventos','Atrasos e resoluções','Reprogramações necessárias'],fx:'(atividades realizadas conforme o prazo ÷ atividades previstas no painel) × 100',ob:'Imprevistos pedem reorganização de prazos e responsáveis, não cancelamento.'}
+];
+document.getElementById('kpiGrid').innerHTML=kpis.map(k=>`<article class="card"><h3>${k.n}</h3><p>${k.o}</p><div class="meta">${k.m}</div><span class="tag g">Meta</span><span class="tag">⏱ ${k.f}</span>
+<p><b>Ações estratégicas</b></p><ul>${k.a.map(x=>`<li>${x}</li>`).join('')}</ul>
+<p><b>Indicadores complementares</b></p><ul>${k.c.map(x=>`<li>${x}</li>`).join('')}</ul>
+<div class="formula"><b>Fórmula (sugestão operacional):</b><br>${k.fx}</div>
+<p style="font-size:13px;margin-top:10px">ℹ️ ${k.ob}</p></article>`).join('');
+
+/* ===== DADOS: 5W2H ===== */
+const w=[['What — O quê?','Desenvolver ações para incentivar a participação da comunidade na organização das atividades.'],['Why — Por quê?','Incentivar a participação nos projetos, fortalecer o trabalho em equipe e melhorar a comunicação interna.'],['Where — Onde?','Dependências da escola: salas de aula, pátios e áreas de convivência.'],['When — Quando?','Durante o próximo mês, conforme o plano original.'],['Who — Quem?','Direção, coordenação pedagógica, professores, funcionários e alunos.'],['How — Como?','Reuniões participativas, canais de comunicação, avisos, calendários e atividades coletivas.'],['How much — Quanto?','Estimativa de R$ 150,00 no primeiro mês (papelaria, cartolinas, impressões e materiais de apoio). Prioridade para recursos existentes, reutilização, divulgação digital, parcerias e doações.']];
+const wc=[['What — O quê?','Padronizar comunicados e implementar confirmação de leitura, com apoio do calendário mensal.'],['Why — Por quê?','A comunicação com as famílias é a prioridade nº 1 da matriz.'],['Where — Onde?','Grupos de WhatsApp das turmas, Instagram e comunicados impressos.'],['When — Quando?','<span class="edit" contenteditable="true">a definir pela escola</span>'],['Who — Quem?','Equipe gestora coordena, com professores, representantes de turma e Grêmio (sugestão do questionário).'],['How — Como?','Modelo único de aviso, formulário ou enquete de confirmação, lista de pendências e canal para dúvidas.'],['How much — Quanto?','<span class="edit" contenteditable="true">a estimar</span> (priorizar recursos já existentes)']];
+const rows=a=>a.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join('');
+document.getElementById('w5Body').innerHTML=rows(w);
+document.getElementById('w5cBody').innerHTML=rows(wc);
+
+/* ===== FERRAMENTAS: abas e altura automática ===== */
+function fit(f){try{const i=f.querySelector('iframe'),d=i.contentDocument;if(d&&f.classList.contains('on'))i.style.height=Math.max(640,d.documentElement.scrollHeight+4)+'px'}catch(e){}}
+document.querySelectorAll('.tabb').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabb').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.frame').forEach(f=>f.classList.toggle('on',f.id===b.dataset.f));
+  fit(document.getElementById(b.dataset.f));
+});
+document.querySelectorAll('.frame iframe').forEach(i=>i.addEventListener('load',()=>fit(i.parentNode)));
+setInterval(()=>document.querySelectorAll('.frame').forEach(fit),1000);
+
+/* ===== MENU MÓVEL E LINK ATIVO ===== */
+const menu=document.getElementById('menu'),mb=document.getElementById('menuBtn');
+mb.onclick=()=>{const o=menu.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+menu.querySelectorAll('a').forEach(a=>a.onclick=()=>{menu.classList.remove('open');mb.setAttribute('aria-expanded',false)});
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){menu.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('section').forEach(s=>io.observe(s));
+}
+</script>
+</body>
+</html>
